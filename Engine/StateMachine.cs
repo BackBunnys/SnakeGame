@@ -4,7 +4,7 @@ namespace SnakeGame.Engine
 {
     class StateMachine
     {
-            private Stack<IState> states;
+            private readonly Stack<IState> states;
 
             public StateMachine()
             {
@@ -38,6 +38,12 @@ namespace SnakeGame.Engine
             {
                 state.Init();
                 states.Push(state);
+            }
+
+            public void ReplaceState(IState state)
+            {
+                PopState();
+                PushState(state);
             }
 
             public IState GetCurrentState()

@@ -79,7 +79,13 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Application.cs" />
+    <Compile Include="Core\Controller\DefaultKeyboardBindings.cs" />
+    <Compile Include="Core\Controller\SnakeKeyboardController.cs" />
+    <Compile Include="Core\MoveDirection.cs" />
+    <Compile Include="Core\MoveSpeedExtensions.cs" />
+    <Compile Include="Core\Statistics.cs" />
     <Compile Include="Engine\GameEngine.cs" />
+    <Compile Include="Screen\GameOverScreen.cs" />
     <Compile Include="Engine\IState.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Engine\StateMachine.cs" />
@@ -89,7 +95,15 @@
       <DependentUpon>Resource.resx</DependentUpon>
     </Compile>
     <Compile Include="Screen\GameScreen.cs" />
+    <Compile Include="Screen\GameSetup.cs" />
     <Compile Include="Screen\IntroScreen.cs" />
+    <Compile Include="Screen\OverlayScreen.cs" />
+    <Compile Include="Screen\PauseScreen.cs" />
+    <Compile Include="Core\Snake.cs" />
+    <Compile Include="Screen\RoundOverScreen.cs" />
+    <Compile Include="Utils\ImageUtils.cs" />
+    <Compile Include="Utils\SFMLExtensions.cs" />
+    <Compile Include="Utils\Tileset.cs" />
   </ItemGroup>
   <ItemGroup>
     <Reference Include="sfml-audio">
@@ -144,6 +158,9 @@
     <Content Include="OpenTK.dll">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
+    <None Include="Resources\simple_background.png" />
+    <None Include="Resources\snake-tileset.png" />
+    <None Include="Resources\background.png" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>
