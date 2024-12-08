@@ -101,26 +101,6 @@ namespace SnakeGame {
         /// <summary>
         ///   Поиск локализованного ресурса типа System.Drawing.Bitmap.
         /// </summary>
-        internal static System.Drawing.Bitmap green {
-            get {
-                object obj = ResourceManager.GetObject("green", resourceCulture);
-                return ((System.Drawing.Bitmap)(obj));
-            }
-        }
-        
-        /// <summary>
-        ///   Поиск локализованного ресурса типа System.Drawing.Bitmap.
-        /// </summary>
-        internal static System.Drawing.Bitmap red {
-            get {
-                object obj = ResourceManager.GetObject("red", resourceCulture);
-                return ((System.Drawing.Bitmap)(obj));
-            }
-        }
-        
-        /// <summary>
-        ///   Поиск локализованного ресурса типа System.Drawing.Bitmap.
-        /// </summary>
         internal static System.Drawing.Bitmap simple_background {
             get {
                 object obj = ResourceManager.GetObject("simple_background", resourceCulture);
@@ -134,16 +114,6 @@ namespace SnakeGame {
         internal static System.Drawing.Bitmap snake_tileset {
             get {
                 object obj = ResourceManager.GetObject("snake_tileset", resourceCulture);
-                return ((System.Drawing.Bitmap)(obj));
-            }
-        }
-        
-        /// <summary>
-        ///   Поиск локализованного ресурса типа System.Drawing.Bitmap.
-        /// </summary>
-        internal static System.Drawing.Bitmap white {
-            get {
-                object obj = ResourceManager.GetObject("white", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
             }
         }

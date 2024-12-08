@@ -2,6 +2,7 @@
 using SFML.System;
 using SFML.Window;
 using SnakeGame.Core;
+using SnakeGame.Core.Player;
 using SnakeGame.Engine;
 using System.Collections.Generic;
 using System.Linq;
@@ -12,18 +13,16 @@ namespace SnakeGame.Screen
     {
         public class RoundResult
         {
-            public RoundResult(Dictionary<Snake, uint> scoreMap)
+            public List<Player> Players { get; set; }
+
+            public RoundResult(List<Player> players)
             {
-                ScoreMap = scoreMap;
+                Players = players;
             }
-
-            public Dictionary<Snake, uint> ScoreMap { get; set; }
-
-
         }
 
-        private GameScreen game;
-        private RoundResult result;
+        private readonly GameScreen game;
+        private readonly RoundResult result;
         Text roundOverText;
         Text resultText;
         readonly int roundOverDurationInSeconds = 3;
@@ -63,7 +62,7 @@ namespace SnakeGame.Screen
 
         private string GetResultText()
         {
-            List<Snake> snakes = new List<Snake>(result.ScoreMap.Keys);
+            List<Snake> snakes = result.Players.Select(player => player.Snake).ToList();
 
             if (snakes.TrueForAll(snake => snake.Dead))
             {
@@ -72,15 +71,15 @@ namespace SnakeGame.Screen
 
             if (snakes.TrueForAll(snake => !snake.Dead))
             {
-                if (snakes.TrueForAll(snake => snake.Segments.Count - 2 == snakes[0].Segments.Count - 2))
+                if (snakes.TrueForAll(snake => snake.Eated == snakes[0].Eated))
                 {
                     return "Draw !";
                 }
-                var (maxScore, index) = snakes.Select((snake, i) => (snake.Segments.Count - 2, i)).Max();
-                return snakes[index].Name + " won the round!";
+                var (maxScore, index) = snakes.Select((snake, i) => (snake.Eated, i)).Max();
+                return result.Players[index].Name + " won the round!";
             }
 
-            return snakes.Find(snake => !snake.Dead).Name + " won the round!";
+            return result.Players.Find(player => !player.Snake.Dead).Name + " won the round!";
         }
 
         public override void ProcessEvent(Event ev)

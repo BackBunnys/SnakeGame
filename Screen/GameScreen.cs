@@ -3,6 +3,8 @@ using SFML.System;
 using SFML.Window;
 using SnakeGame.Core;
 using SnakeGame.Core.Controller;
+using SnakeGame.Core.Player;
+using SnakeGame.Core.Tileset;
 using SnakeGame.Engine;
 using SnakeGame.Utils;
 using System;
@@ -13,32 +15,24 @@ namespace SnakeGame.Screen
 {
     class GameScreen : IState //TODO: refactor
     {
-        struct Fruct
-        {
-            public float x, y;
-        }
-
-        const uint N = 30, M = 20;
+        uint N = 34, M = 20;
         uint tile_width;
         uint tile_height;
 
-        private Fruct fruit;
+        private Fruit fruit = new Fruit();
         readonly GameSetup setup;
-        readonly List<Snake> snakes = new List<Snake>();
-        readonly List<SnakeKeyboardController> controllers = new List<SnakeKeyboardController>();
-        private SnakeBotController botController;
+        readonly List<Player> players = new List<Player>();
         readonly Random random = new Random();
         Sprite fruitSprite;
         Tileset tileset;
         Statistics statistics;
-        Dictionary<Snake, uint> scoreMap;
-        int roundNumber = 1;
-        uint fieldOffset = 65;
+        int roundNumber = 0;
+        readonly uint fieldOffset = 65;
 
-        void Tick(Snake snake, ref Fruct fruit)
+        void Tick(Snake snake)
         {
 
-            if ((snake.Position.X == fruit.x) && (snake.Position.Y == fruit.y))
+            if ((snake.Position.X == fruit.X) && (snake.Position.Y == fruit.Y))
             {
                 snake.GrowUp();
                 RespawnFruit();
@@ -56,22 +50,22 @@ namespace SnakeGame.Screen
 
         private bool IsRoundOver()
         {
-            if (snakes.Count > 1)
+            if (players.Count > 1)
             {
-                if (snakes.FindAll(snake => !snake.Dead).Count <= 1)
+                if (players.FindAll(player => !player.Snake.Dead).Count <= 1)
                 {
                     return true;
                 }
             }
             else
             {
-                if (snakes[0].Dead)
+                if (players[0].Snake.Dead)
                 {
                     return true;
                 }
             }
 
-            if (snakes.Select(snake => snake.Segments.Count).Sum() == N * M)
+            if (players.Select(player => player.Snake.Segments.Count).Sum() == N * M)
             {
                 return true;
             }
@@ -82,14 +76,14 @@ namespace SnakeGame.Screen
         private void CheckCollisions()
         {
             List<Vector2f> heads = new List<Vector2f>();
-            snakes.ForEach(snake => heads.Add(snake.Position));
-            foreach (Snake snake in snakes)
+            players.ForEach(player => heads.Add(player.Snake.Position));
+            foreach (Snake snake in players.Select(player => player.Snake))
             {
                 for (int i = 0; i < heads.Count; ++i)
                 {
                     if (snake.Segments.FindLastIndex(segment => segment == heads[i]) > 0)
                     {
-                        snakes[i].Dead = true;
+                        players[i].Snake.Dead = true;
                         return;
                     }
                 }
@@ -104,130 +98,126 @@ namespace SnakeGame.Screen
 
         public override void Init()
         {
-            Font font = new Font(Resource.arial);
+            SetupTileset();
+            SetupField();
+            SetupFruit();
+            SetupSnakes();
+            SetupStatistics();
+
+            NewRound();
+        }
+
+        private void SetupTileset()
+        {
+            tileset = new SnakeTileset(new Texture(ImageUtils.BitmapToByteArray(Resource.snake_tileset)));
+        }
+
+        private void SetupField()
+        {
+            N = setup.FieldSize.X;
+            M = setup.FieldSize.Y;
             tile_width = engine.GetWindow().Size.X / N;
             tile_height = (engine.GetWindow().Size.Y - fieldOffset) / M;
+        }
 
-            fruit = new Fruct
-            {
-                x = 5,
-                y = 5
-            };
+        private void SetupFruit()
+        {
+            fruit = new Fruit();
+            fruitSprite = tileset.GetTile(SnakeTileset.Tile.FRUIT);
+            fruitSprite.Color = new Color(255, 100, 100);
+            fruitSprite.Scale = new Vector2f(tile_width / fruitSprite.GetLocalBounds().Width, tile_height / fruitSprite.GetLocalBounds().Height);
+        }
 
-            tileset = Tileset.FromTexture(new Texture(ImageUtils.BitmapToByteArray(Resource.snake_tileset)));
-            tileset.Bind(Snake.Bindings);
-
-            var snake = new Snake(tileset, new Vector2u(tile_width, tile_height))
-            {
-                Name = "Player 1",
-            };
-            snakes.Add(snake);
-            controllers.Add(new SnakeKeyboardController(DefaultKeyboardBindings.PLAYER_ONE, snake));
+        private void SetupSnakes()
+        {
+            Snake snake = new Snake(tileset, new Vector2u(tile_width, tile_height));
+            players.Add(new HumanPlayer(snake, new SnakeKeyboardController(DefaultKeyboardBindings.PLAYER_ONE, snake)) { Name = "Player 1" });
 
             if (setup.Type == GameSetup.GameType.MULTIPLAYER)
             {
-                Snake secondSnake = new Snake(tileset, new Vector2u(tile_width, tile_height))
-                {
-                    Name = "Player 2",
-                    Color = new Color(255, 165, 0)
-                };
-                snakes.Add(secondSnake);
+                Snake secondSnake = new Snake(tileset, new Vector2u(tile_width, tile_height));
                 if (setup.VersusBot)
-                {
-                    secondSnake.Name = "Bot";
-                    secondSnake.Color = Color.Yellow;
-                    botController = new SnakeBotController(secondSnake);
-                }
-                else controllers.Add(new SnakeKeyboardController(DefaultKeyboardBindings.PLAYER_TWO, secondSnake));
+                    players.Add(new BotPlayer(secondSnake, new SnakeBotController(secondSnake) { Target = fruit }) { Name = "Bot", Color = Color.Yellow });
+                else 
+                    players.Add(new HumanPlayer(secondSnake, new SnakeKeyboardController(DefaultKeyboardBindings.PLAYER_TWO, secondSnake)) { Name = "Player 2", Color = new Color(255, 165, 0) });
             }
+        }
 
-
-            fruitSprite = tileset.GetTile(Snake.SnakeTileset.FRUIT);
-            fruitSprite.Color = new Color(255, 100, 100);
-            fruitSprite.Scale = new Vector2f(tile_width / fruitSprite.GetLocalBounds().Width, tile_height / fruitSprite.GetLocalBounds().Height);
-
-            statistics = new Statistics(snakes, tileset);
+        private void SetupStatistics()
+        {
+            statistics = new Statistics(players, tileset);
             statistics.Position = new Vector2f(engine.GetWindow().Size.X / 2 - statistics.Size.X / 2, 0);
-
-            scoreMap = new Dictionary<Snake, uint>();
-            snakes.ForEach(snakeItem => scoreMap.Add(snakeItem, 0));
+            statistics.RoundCount = setup.RoundCount;
         }
 
         public void NewRound()
         {
-            snakes.ForEach(snake => snake.Reset());
+            players.ForEach(player => player.Snake.Reset());
             RespawnFruit();
             roundNumber++;
+            statistics.Round = roundNumber;
         }
 
         private void RespawnFruit()
         {
-            fruit.x = random.Next() % N;
-            fruit.y = random.Next() % M;
-            if (botController != null) //TODO refactor 
-                botController.Target = new Vector2f(fruit.x, fruit.y);
+            fruit.X = random.Next() % N;
+            fruit.Y = random.Next() % M;
         }
 
         public override void ProcessEvent(Event ev)
         {
-            if (ev.Type == EventType.KeyPressed)
-            {
-                controllers.ForEach(controller => controller.OnKeyPressed(ev.Key.Code));
-                if (ev.Key.Code == Keyboard.Key.Escape) engine.GetMachine().PushState(new PauseScreen(engine, setup));
-            }
-            if (ev.Type == EventType.KeyReleased)
-            {
-                controllers.ForEach(controller => controller.OnKeyReleased(ev.Key.Code));
-            }
+            if (ev.Key.Code == Keyboard.Key.Escape) engine.GetMachine().PushState(new PauseScreen(engine, setup));
+            players.ForEach(player => player.ProcessEvent(ev));
         }
 
         public override void Render(RenderTarget target, RenderStates states)
         {
             statistics.Render(target, states);
             states.Transform.Translate(0, fieldOffset);
-            snakes.ForEach(snake => snake.Render(target, states));
-            fruitSprite.Position = new Vector2f(fruit.x * tile_width, fruit.y * tile_height);
+            players.ForEach(player => player.Render(target, states));
+            fruitSprite.Position = new Vector2f(fruit.X * tile_width, fruit.Y * tile_height);
             target.Draw(fruitSprite, states);
         }
 
         public override void Update(float dt)
         {
-            botController?.Update();
-            snakes.ForEach(snake =>
+            players.ForEach(player =>
             {
-                snake.Update(dt);
-                Tick(snake, ref fruit);
+                player.Update(dt);
+                Tick(player.Snake);
             });
             CheckCollisions();
             if (IsRoundOver())
             {
-                UpdateScoreMap();
+                UpdateScores();
 
                 if (IsGameOver())
                 {
-                    engine.GetMachine().PushState(new GameOverScreen(engine, new GameOverScreen.GameResult(scoreMap), setup));
+                    engine.GetMachine().PushState(new GameOverScreen(engine, new GameOverScreen.GameResult(players), setup));
                 } 
                 else
                 {
-                    engine.GetMachine().PushState(new RoundOverScreen(engine, this, new RoundOverScreen.RoundResult(scoreMap)));
+                    engine.GetMachine().PushState(new RoundOverScreen(engine, this, new RoundOverScreen.RoundResult(players)));
                 }
             }
         }
 
         private bool IsGameOver()
         {
-            List<uint> scores = new List<uint>(scoreMap.Values);
+            if (setup.RoundCount == null) return false;
+
+            List<uint> scores = players.Select(player => player.Score).ToList();
             uint maxScore = scores.Max();
             return maxScore >= (setup.RoundCount + 1) / 2 || roundNumber >= setup.RoundCount;
         }
 
-        private void UpdateScoreMap()
+        private void UpdateScores()
         {
-            List<Snake> aliveSnakes = snakes.FindAll(snake => !snake.Dead);
-            if (aliveSnakes.Count > 0)
+            List<Player> alivePlayers = players.FindAll(player => !player.Snake.Dead);
+            if (alivePlayers.Count > 0)
             {
-                var (maxScore, index) = aliveSnakes.Select((snake, i) => (snake.Segments.Count - 2, i)).Max();
-                scoreMap[aliveSnakes[index]]++;
+                var (maxScore, index) = alivePlayers.Select((player, i) => (player.Snake.Eated, i)).Max();
+                alivePlayers[index].Score++;
             }
         }
     }

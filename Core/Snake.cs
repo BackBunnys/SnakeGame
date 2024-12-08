@@ -1,63 +1,21 @@
 ﻿using SFML.Graphics;
 using SFML.System;
 using System.Collections.Generic;
-using SnakeGame.Utils;
 using System;
+using static SnakeGame.Core.Tileset.SnakeTileset;
 
 namespace SnakeGame.Core
 {
     public class Snake
     {
-        public enum SnakeTileset
-        {
-            UP_RIGHT,
-            LEFT_RIGHT,
-            RIGHT_DOWN,
-            UP_DOWN,
-            DOWN_LEFT,
-            DOWN_RIGHT,
-            HEAD_UP,
-            HEAD_DOWN,
-            HEAD_LEFT,
-            HEAD_RIGHT,
-            TALE_UP,
-            TALE_LEFT,
-            TALE_RIGHT,
-            TALE_DOWN,
-            EMPTY,
-            FRUIT,
-        }
+        
 
-        public static List<SnakeTileset> Bindings { get; } = new List<SnakeTileset>()
-        {
-            SnakeTileset.UP_RIGHT,
-            SnakeTileset.LEFT_RIGHT,
-            SnakeTileset.RIGHT_DOWN,
-            SnakeTileset.HEAD_UP,
-            SnakeTileset.HEAD_RIGHT,
-            SnakeTileset.DOWN_RIGHT,
-            SnakeTileset.EMPTY,
-            SnakeTileset.UP_DOWN,
-            SnakeTileset.HEAD_LEFT,
-            SnakeTileset.HEAD_DOWN,
-            SnakeTileset.EMPTY,
-            SnakeTileset.EMPTY,
-            SnakeTileset.DOWN_LEFT,
-            SnakeTileset.TALE_UP,
-            SnakeTileset.TALE_RIGHT,
-            SnakeTileset.FRUIT,
-            SnakeTileset.EMPTY,
-            SnakeTileset.EMPTY,
-            SnakeTileset.TALE_LEFT,
-            SnakeTileset.TALE_DOWN
-        };
-
-        readonly Tileset tileset;
+        readonly Utils.Tileset tileset;
         List<Vector2f> segments;
 
         public List<Vector2f> Segments { get => segments; }
+        public uint Eated { get => (uint) Segments.Count - 2; }
         public MoveDirection Direction { get => _direction; set => pendingDirection = value; }
-        public string Name { get; set; }
         public Color Color { get; set; } = Color.Green;
 
         public MoveSpeed Movement { get; set; } = MoveSpeed.NORMAL;
@@ -74,7 +32,7 @@ namespace SnakeGame.Core
         private MoveDirection pendingDirection;
         private static readonly Random random = new Random();
 
-        public Snake(Tileset tileset, Vector2u segmentSize)
+        public Snake(Utils.Tileset tileset, Vector2u segmentSize)
         {
             this.tileset = tileset;
             SegmentSize = segmentSize;
@@ -127,23 +85,23 @@ namespace SnakeGame.Core
         {
             for (int i = 0; i < segments.Count; i++)
             {
-                SnakeTileset tile = SnakeTileset.HEAD_UP;
+                Tile tile = Tile.HEAD_UP;
 
                 if (i == 0)
                 {
                     switch (Direction)
                     {
                         case MoveDirection.LEFT:
-                            tile = SnakeTileset.HEAD_LEFT;
+                            tile = Tile.HEAD_LEFT;
                             break;
                         case MoveDirection.RIGHT:
-                            tile = SnakeTileset.HEAD_RIGHT;
+                            tile = Tile.HEAD_RIGHT;
                             break;
                         case MoveDirection.UP:
-                            tile = SnakeTileset.HEAD_UP;
+                            tile = Tile.HEAD_UP;
                             break;
                         case MoveDirection.DOWN:
-                            tile = SnakeTileset.HEAD_DOWN;
+                            tile = Tile.HEAD_DOWN;
                             break;
                     }
                 }
@@ -151,19 +109,19 @@ namespace SnakeGame.Core
                 {
                     if (segments[i].Y < segments[i - 1].Y)
                     {
-                        tile = SnakeTileset.TALE_DOWN;
+                        tile = Tile.TALE_DOWN;
                     }
                     if (segments[i].Y > segments[i - 1].Y)
                     {
-                        tile = SnakeTileset.TALE_UP;
+                        tile = Tile.TALE_UP;
                     }
                     if (segments[i].X < segments[i - 1].X)
                     {
-                        tile = SnakeTileset.TALE_RIGHT;
+                        tile = Tile.TALE_RIGHT;
                     }
                     if (segments[i].X > segments[i - 1].X)
                     {
-                        tile = SnakeTileset.TALE_LEFT;
+                        tile = Tile.TALE_LEFT;
                     }
                 }
                 else
@@ -172,60 +130,60 @@ namespace SnakeGame.Core
                     {
                         if (segments[i].X < segments[i + 1].X)
                         {
-                            tile = SnakeTileset.DOWN_RIGHT;
+                            tile = Tile.DOWN_RIGHT;
                         }
                         else if (segments[i].X > segments[i + 1].X)
                         {
-                            tile = SnakeTileset.DOWN_LEFT;
+                            tile = Tile.DOWN_LEFT;
                         }
                         else
                         {
-                            tile = SnakeTileset.UP_DOWN;
+                            tile = Tile.UP_DOWN;
                         }
                     }
                     if (segments[i].Y < segments[i - 1].Y)
                     {
                         if (segments[i].X < segments[i + 1].X)
                         {
-                            tile = SnakeTileset.UP_RIGHT;
+                            tile = Tile.UP_RIGHT;
                         }
                         else if (segments[i].X > segments[i + 1].X)
                         {
-                            tile = SnakeTileset.RIGHT_DOWN;
+                            tile = Tile.RIGHT_DOWN;
                         }
                         else
                         {
-                            tile = SnakeTileset.UP_DOWN;
+                            tile = Tile.UP_DOWN;
                         }
                     }
                     if (segments[i].X > segments[i - 1].X)
                     {
                         if (segments[i].Y < segments[i + 1].Y)
                         {
-                            tile = SnakeTileset.RIGHT_DOWN;
+                            tile = Tile.RIGHT_DOWN;
                         }
                         else if (segments[i].Y > segments[i + 1].Y)
                         {
-                            tile = SnakeTileset.DOWN_LEFT;
+                            tile = Tile.DOWN_LEFT;
                         }
                         else
                         {
-                            tile = SnakeTileset.LEFT_RIGHT;
+                            tile = Tile.LEFT_RIGHT;
                         }
                     }
                     if (segments[i].X < segments[i - 1].X)
                     {
                         if (segments[i].Y < segments[i + 1].Y)
                         {
-                            tile = SnakeTileset.UP_RIGHT;
+                            tile = Tile.UP_RIGHT;
                         }
                         else if (segments[i].Y > segments[i + 1].Y)
                         {
-                            tile = SnakeTileset.DOWN_RIGHT;
+                            tile = Tile.DOWN_RIGHT;
                         }
                         else
                         {
-                            tile = SnakeTileset.LEFT_RIGHT;
+                            tile = Tile.LEFT_RIGHT;
                         }
                     }
                 }

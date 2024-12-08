@@ -2,6 +2,7 @@
 using SFML.System;
 using SFML.Window;
 using SnakeGame.Core;
+using SnakeGame.Core.Player;
 using SnakeGame.Engine;
 using SnakeGame.Utils;
 using System.Collections.Generic;
@@ -13,11 +14,11 @@ namespace SnakeGame.Screen
     {
         public class GameResult
         {
-            public Dictionary<Snake, uint> ScoreMap { get; set; }
+            public List<Player> Players { get; set; }
 
-            public GameResult(Dictionary<Snake, uint> scoreMap)
+            public GameResult(List<Player> players)
             {
-                ScoreMap = scoreMap;
+                Players = players;
             }
         }
 
@@ -74,22 +75,22 @@ namespace SnakeGame.Screen
 
         private string GetResultText()
         {
-            if (result.ScoreMap.Count == 1) //Signleplayer
+            if (result.Players.Count == 1) //Singleplayer
             {
-                Snake snake = new List<Snake>(result.ScoreMap.Keys)[0];
+                Snake snake = result.Players[0].Snake;
                 if (snake.Dead) return "You lost!";
                 else return "You won!";
             }
 
             //Multiplayer
-            List<uint> values = new List<uint>(result.ScoreMap.Values);
+            List<uint> values = result.Players.Select(player => player.Score).ToList();
             
             if (values.TrueForAll(value => value == values[0]))
             {
                 return "Draw!";
             }
             var (maxValue, index) = values.Select((value, i) => (value, i)).Max();
-            return result.ScoreMap.ElementAt(index).Key.Name + " won the game!";
+            return result.Players.ElementAt(index).Name + " won the game!";
         }
 
         public override void ProcessEvent(Event ev)

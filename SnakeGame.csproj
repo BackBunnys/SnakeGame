@@ -110,8 +110,13 @@
     <Compile Include="Core\Controller\DefaultKeyboardBindings.cs" />
     <Compile Include="Core\Controller\SnakeBotController.cs" />
     <Compile Include="Core\Controller\SnakeKeyboardController.cs" />
+    <Compile Include="Core\Fruit.cs" />
     <Compile Include="Core\MoveDirection.cs" />
     <Compile Include="Core\MoveSpeed.cs" />
+    <Compile Include="Core\Player\BotPlayer.cs" />
+    <Compile Include="Core\Player\HumanPlayer.cs" />
+    <Compile Include="Core\Player\Player.cs" />
+    <Compile Include="Core\Tileset\SnakeTileset.cs" />
     <Compile Include="Core\Statistics.cs" />
     <Compile Include="Engine\GameEngine.cs" />
     <Compile Include="Screen\GameOverScreen.cs" />
@@ -160,13 +165,6 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="Resources\arial.ttf" />
-    <None Include="Resources\green.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="Resources\white.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="Resources\red.png" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="csfml-audio-2.dll">

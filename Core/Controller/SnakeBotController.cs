@@ -7,7 +7,7 @@ namespace SnakeGame.Core.Controller
     class SnakeBotController
     {
         public Snake Snake { get; }
-        public Vector2f Target { get; set; }
+        public Fruit Target { get; set; }
 
         public SnakeBotController(Snake snake)
         {

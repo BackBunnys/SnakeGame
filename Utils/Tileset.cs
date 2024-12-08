@@ -2,6 +2,7 @@
 using SFML.System;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace SnakeGame.Utils
 {
@@ -10,12 +11,7 @@ namespace SnakeGame.Utils
         readonly Sprite[,] spriteMap;
         List<string> bindings;
 
-        private Tileset(Sprite[,] spriteMap)
-        {
-            this.spriteMap = spriteMap;
-        }
-
-        public static Tileset FromTexture(Texture texture, int tilesize = 64)
+        public Tileset(Texture texture, int tilesize = 64)
         {
             Sprite[,] sprites = new Sprite[texture.Size.Y / tilesize, texture.Size.X / tilesize];
             Vector2i tileSize = new Vector2i(tilesize, tilesize);
@@ -29,7 +25,7 @@ namespace SnakeGame.Utils
                 }
             }
 
-            return new Tileset(sprites);
+            spriteMap = sprites;
         }
 
         public void Bind(List<string> names)
@@ -58,6 +54,11 @@ namespace SnakeGame.Utils
         public Sprite GetTile<T>(T name) where T : Enum
         {
             return GetTile(name.ToString());
+        }
+
+        public List<Sprite> GetTiles()
+        {
+            return spriteMap.Cast<Sprite>().ToList();
         }
     }
 }
