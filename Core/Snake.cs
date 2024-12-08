@@ -60,19 +60,21 @@ namespace SnakeGame.Core
         public string Name { get; set; }
         public Color Color { get; set; } = Color.Green;
 
-        public MoveSpeed Speed { get; set; } = MoveSpeed.NORMAL;
-        public uint SegmentSize { get; set; }
+        public MoveSpeed Movement { get; set; } = MoveSpeed.NORMAL;
+        public Vector2u SegmentSize { get; set; }
+
+        public float Speed { get => 1 / delay; set => delay = 1 / value; }
         public Vector2f Position { get => segments[0]; set => segments[0] = value; }
 
         public bool Dead { get; set; } = false;
 
         float time = 0;
-        readonly float delay = 100;
+        private float delay = 100;
         private MoveDirection _direction;
         private MoveDirection pendingDirection;
         private static readonly Random random = new Random();
 
-        public Snake(Tileset tileset, uint segmentSize)
+        public Snake(Tileset tileset, Vector2u segmentSize)
         {
             this.tileset = tileset;
             SegmentSize = segmentSize;
@@ -86,7 +88,7 @@ namespace SnakeGame.Core
             _direction = (MoveDirection) values.GetValue(random.Next(values.Length));
             segments = new List<Vector2f>
             {
-                new Vector2f(random.Next(7, 15), random.Next(7, 15))
+                new Vector2f(random.Next(5, 15), random.Next(5, 15))
             };
             segments.Add(segments[0] - Direction.GetVector());
             pendingDirection = _direction;
@@ -97,7 +99,7 @@ namespace SnakeGame.Core
             if (Dead) return;
 
             time += dt;
-            if (time < delay / Speed.GetFactor()) return;
+            if (time < delay / Movement.GetFactor()) return;
 
             time = 0;
             _direction = pendingDirection;
@@ -233,8 +235,8 @@ namespace SnakeGame.Core
                 {
                     snakeSprite.Color = Color;
                 }
-                snakeSprite.Position = new Vector2f(segments[i].X * SegmentSize, segments[i].Y * SegmentSize);
-                snakeSprite.Scale = new Vector2f(SegmentSize / snakeSprite.GetLocalBounds().Width, SegmentSize / snakeSprite.GetLocalBounds().Height);
+                snakeSprite.Position = new Vector2f(segments[i].X * SegmentSize.X, segments[i].Y * SegmentSize.Y);
+                snakeSprite.Scale = new Vector2f(SegmentSize.X / snakeSprite.GetLocalBounds().Width, SegmentSize.Y / snakeSprite.GetLocalBounds().Height);
                 target.Draw(snakeSprite, states);
             }
         }

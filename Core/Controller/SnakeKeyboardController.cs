@@ -20,10 +20,10 @@ namespace SnakeGame.Core.Controller
             {
                 if (Snake.Direction == moveDirection)
                 {
-                    Snake.Speed = MoveSpeed.FAST;
+                    Snake.Movement = MoveSpeed.FAST;
                 } 
                 else if (Snake.Direction.IsOpposite(moveDirection)) {
-                    Snake.Speed = MoveSpeed.SLOW;
+                    Snake.Movement = MoveSpeed.SLOW;
                 }
                 else
                 {
@@ -36,7 +36,7 @@ namespace SnakeGame.Core.Controller
         {
             if (Bindings.ContainsKey(key))
             {
-                Snake.Speed = MoveSpeed.NORMAL;
+                Snake.Movement = MoveSpeed.NORMAL;
             }
         }
     }

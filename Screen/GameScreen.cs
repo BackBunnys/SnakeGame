@@ -26,16 +26,18 @@ namespace SnakeGame.Screen
         readonly GameSetup setup;
         readonly List<Snake> snakes = new List<Snake>();
         readonly List<SnakeKeyboardController> controllers = new List<SnakeKeyboardController>();
+        private SnakeBotController botController;
         readonly Random random = new Random();
         Sprite fruitSprite;
         Tileset tileset;
         Statistics statistics;
         Dictionary<Snake, uint> scoreMap;
         int roundNumber = 1;
+        uint fieldOffset = 65;
 
         void Tick(Snake snake, ref Fruct fruit)
         {
-            
+
             if ((snake.Position.X == fruit.x) && (snake.Position.Y == fruit.y))
             {
                 snake.GrowUp();
@@ -46,7 +48,7 @@ namespace SnakeGame.Screen
             {
                 snake.Dead = true;
             }
-            if  (snake.Position.Y > M - 2|| snake.Position.Y < 2)
+            if (snake.Position.Y >= M || snake.Position.Y < 0)
             {
                 snake.Dead = true;
             }
@@ -60,7 +62,8 @@ namespace SnakeGame.Screen
                 {
                     return true;
                 }
-            } else
+            }
+            else
             {
                 if (snakes[0].Dead)
                 {
@@ -103,33 +106,38 @@ namespace SnakeGame.Screen
         {
             Font font = new Font(Resource.arial);
             tile_width = engine.GetWindow().Size.X / N;
-            tile_height = engine.GetWindow().Size.Y / M;
+            tile_height = (engine.GetWindow().Size.Y - fieldOffset) / M;
 
             fruit = new Fruct
             {
-                x = 10,
-                y = 10
+                x = 5,
+                y = 5
             };
 
             tileset = Tileset.FromTexture(new Texture(ImageUtils.BitmapToByteArray(Resource.snake_tileset)));
             tileset.Bind(Snake.Bindings);
 
-            var snake = new Snake(tileset, tile_width)
+            var snake = new Snake(tileset, new Vector2u(tile_width, tile_height))
             {
-                Name = "Player 1"
+                Name = "Player 1",
             };
             snakes.Add(snake);
             controllers.Add(new SnakeKeyboardController(DefaultKeyboardBindings.PLAYER_ONE, snake));
 
             if (setup.Type == GameSetup.GameType.MULTIPLAYER)
             {
-                Snake secondSnake = new Snake(tileset, tile_width)
+                Snake secondSnake = new Snake(tileset, new Vector2u(tile_width, tile_height))
                 {
                     Name = "Player 2",
                     Color = new Color(255, 165, 0)
                 };
                 snakes.Add(secondSnake);
-                if (setup.VersusBot) { /*TODO*/ }
+                if (setup.VersusBot)
+                {
+                    secondSnake.Name = "Bot";
+                    secondSnake.Color = Color.Yellow;
+                    botController = new SnakeBotController(secondSnake);
+                }
                 else controllers.Add(new SnakeKeyboardController(DefaultKeyboardBindings.PLAYER_TWO, secondSnake));
             }
 
@@ -138,9 +146,8 @@ namespace SnakeGame.Screen
             fruitSprite.Color = new Color(255, 100, 100);
             fruitSprite.Scale = new Vector2f(tile_width / fruitSprite.GetLocalBounds().Width, tile_height / fruitSprite.GetLocalBounds().Height);
 
-            statistics = new Statistics(snakes, tileset); 
+            statistics = new Statistics(snakes, tileset);
             statistics.Position = new Vector2f(engine.GetWindow().Size.X / 2 - statistics.Size.X / 2, 0);
-
 
             scoreMap = new Dictionary<Snake, uint>();
             snakes.ForEach(snakeItem => scoreMap.Add(snakeItem, 0));
@@ -156,7 +163,9 @@ namespace SnakeGame.Screen
         private void RespawnFruit()
         {
             fruit.x = random.Next() % N;
-            fruit.y = random.Next() % (M - 4) + 3;
+            fruit.y = random.Next() % M;
+            if (botController != null) //TODO refactor 
+                botController.Target = new Vector2f(fruit.x, fruit.y);
         }
 
         public override void ProcessEvent(Event ev)
@@ -174,14 +183,16 @@ namespace SnakeGame.Screen
 
         public override void Render(RenderTarget target, RenderStates states)
         {
-            snakes.ForEach(snake => snake.Render(target, states));
             statistics.Render(target, states);
+            states.Transform.Translate(0, fieldOffset);
+            snakes.ForEach(snake => snake.Render(target, states));
             fruitSprite.Position = new Vector2f(fruit.x * tile_width, fruit.y * tile_height);
             target.Draw(fruitSprite, states);
         }
 
         public override void Update(float dt)
         {
+            botController?.Update();
             snakes.ForEach(snake =>
             {
                 snake.Update(dt);
