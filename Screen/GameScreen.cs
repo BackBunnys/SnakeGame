@@ -77,16 +77,34 @@ namespace SnakeGame.Screen
         {
             List<Vector2f> heads = new List<Vector2f>();
             players.ForEach(player => heads.Add(player.Snake.Position));
-            foreach (Snake snake in players.Select(player => player.Snake))
+            foreach (Player player in players)
             {
                 for (int i = 0; i < heads.Count; ++i)
                 {
-                    if (snake.Segments.FindLastIndex(segment => segment == heads[i]) > 0)
+                    var headPosition = player.Snake.Segments.FindLastIndex(segment => segment == heads[i]);
+                    if (headPosition > 0)
                     {
                         players[i].Snake.Dead = true;
                         return;
                     }
-                }
+                    else if (headPosition == 0)
+                    {
+                        if (player.Snake != players[i].Snake) //Head collision with another snake
+                        {
+                            if (players[i] is BotPlayer && player is BotPlayer) //Both are bots
+                            {
+                                players[i].Snake.Dead = true;
+                                player.Snake.Dead = true;
+                                return;
+                            }
+
+                            if (!(players[i] is BotPlayer)) //first are not bot
+                                players[i].Snake.Dead = true;
+                            if (!(player is BotPlayer)) //second are not bot
+                                player.Snake.Dead = true;
+                        }
+                    }
+                }   
             }
 
         }
