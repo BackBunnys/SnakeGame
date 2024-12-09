@@ -38,7 +38,7 @@ namespace SnakeGame.Screen
         public override void Init()
         {
             base.Init();
-            Font font = new Font(Resource.arial);
+            Font font = Resources.arial;
             gameOverText = new Text("GAME OVER", font)
             {
                 FillColor = Color.White,

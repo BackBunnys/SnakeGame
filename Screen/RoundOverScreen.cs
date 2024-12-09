@@ -4,6 +4,7 @@ using SFML.Window;
 using SnakeGame.Core;
 using SnakeGame.Core.Player;
 using SnakeGame.Engine;
+using SnakeGame.Utils;
 using System.Collections.Generic;
 using System.Linq;
 
@@ -39,7 +40,7 @@ namespace SnakeGame.Screen
             base.Init();
             clock = new Clock();
 
-            Font font = new Font(Resource.arial);
+            Font font = Resources.arial;
             roundOverText = new Text("ROUND OVER", font)
             {
                 FillColor = Color.White,
@@ -73,7 +74,7 @@ namespace SnakeGame.Screen
             {
                 if (snakes.TrueForAll(snake => snake.Eated == snakes[0].Eated))
                 {
-                    return "Draw !";
+                    return "Draw!";
                 }
                 var (maxScore, index) = snakes.Select((snake, i) => (snake.Eated, i)).Max();
                 return result.Players[index].Name + " won the round!";

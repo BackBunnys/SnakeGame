@@ -1,5 +1,6 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="15.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <Import Project="packages\CSFML.2.6.1\build\netframework\CSFML.props" Condition="Exists('packages\CSFML.2.6.1\build\netframework\CSFML.props')" />
   <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
@@ -111,13 +112,15 @@
     <Compile Include="Core\Controller\SnakeBotController.cs" />
     <Compile Include="Core\Controller\SnakeKeyboardController.cs" />
     <Compile Include="Core\Fruit.cs" />
+    <Compile Include="Core\IComponent.cs" />
     <Compile Include="Core\MoveDirection.cs" />
     <Compile Include="Core\MoveSpeed.cs" />
     <Compile Include="Core\Player\BotPlayer.cs" />
     <Compile Include="Core\Player\HumanPlayer.cs" />
     <Compile Include="Core\Player\Player.cs" />
+    <Compile Include="Core\Statistic\PlayerStatistics.cs" />
     <Compile Include="Core\Tileset\SnakeTileset.cs" />
-    <Compile Include="Core\Statistics.cs" />
+    <Compile Include="Core\Statistic\Statistics.cs" />
     <Compile Include="Engine\GameEngine.cs" />
     <Compile Include="Screen\GameOverScreen.cs" />
     <Compile Include="Engine\IState.cs" />
@@ -136,21 +139,22 @@
     <Compile Include="Core\Snake.cs" />
     <Compile Include="Screen\RoundOverScreen.cs" />
     <Compile Include="Utils\ImageUtils.cs" />
+    <Compile Include="Utils\Resources.cs" />
     <Compile Include="Utils\SFMLExtensions.cs" />
     <Compile Include="Utils\Tileset.cs" />
   </ItemGroup>
   <ItemGroup>
-    <Reference Include="sfml-audio">
-      <HintPath>..\..\..\Desktop\SFML.Net-2.4\lib\sfml-audio.dll</HintPath>
+    <Reference Include="SFML.Audio, Version=2.6.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>packages\SFML.Audio.2.6.0\lib\netstandard2.0\SFML.Audio.dll</HintPath>
     </Reference>
-    <Reference Include="sfml-graphics">
-      <HintPath>..\..\..\Desktop\SFML.Net-2.4\lib\sfml-graphics.dll</HintPath>
+    <Reference Include="SFML.Graphics, Version=2.6.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>packages\SFML.Graphics.2.6.0\lib\netstandard2.0\SFML.Graphics.dll</HintPath>
     </Reference>
-    <Reference Include="sfml-system">
-      <HintPath>..\..\..\Desktop\SFML.Net-2.4\lib\sfml-system.dll</HintPath>
+    <Reference Include="SFML.System, Version=2.6.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>packages\SFML.System.2.6.0\lib\netstandard2.0\SFML.System.dll</HintPath>
     </Reference>
-    <Reference Include="sfml-window">
-      <HintPath>..\..\..\Desktop\SFML.Net-2.4\lib\sfml-window.dll</HintPath>
+    <Reference Include="SFML.Window, Version=2.6.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>packages\SFML.Window.2.6.0\lib\netstandard2.0\SFML.Window.dll</HintPath>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Drawing" />
@@ -164,27 +168,11 @@
     </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>
+    <None Include="packages.config" />
     <None Include="Resources\arial.ttf" />
   </ItemGroup>
   <ItemGroup>
-    <Content Include="csfml-audio-2.dll">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="csfml-graphics-2.dll">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="csfml-system-2.dll">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="csfml-window-2.dll">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="openal32.dll">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="OpenTK.dll">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
+    <None Include="Resources\PressStart2P-Regular.ttf" />
     <None Include="Resources\simple_background.png" />
     <None Include="Resources\snake-tileset.png" />
     <None Include="Resources\background.png" />
@@ -202,4 +190,12 @@
     </BootstrapperPackage>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">
+    <PropertyGroup>
+      <ErrorText>Данный проект ссылается на пакеты NuGet, отсутствующие на этом компьютере. Используйте восстановление пакетов NuGet, чтобы скачать их.  Дополнительную информацию см. по адресу: http://go.microsoft.com/fwlink/?LinkID=322105. Отсутствует следующий файл: {0}.</ErrorText>
+    </PropertyGroup>
+    <Error Condition="!Exists('packages\CSFML.2.6.1\build\netframework\CSFML.props')" Text="$([System.String]::Format('$(ErrorText)', 'packages\CSFML.2.6.1\build\netframework\CSFML.props'))" />
+    <Error Condition="!Exists('packages\CSFML.2.6.1\build\netframework\CSFML.targets')" Text="$([System.String]::Format('$(ErrorText)', 'packages\CSFML.2.6.1\build\netframework\CSFML.targets'))" />
+  </Target>
+  <Import Project="packages\CSFML.2.6.1\build\netframework\CSFML.targets" Condition="Exists('packages\CSFML.2.6.1\build\netframework\CSFML.targets')" />
 </Project>

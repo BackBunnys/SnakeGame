@@ -1,6 +1,7 @@
 ﻿using SFML.Graphics;
 using SFML.System;
 using SFML.Window;
+using SnakeGame.Core;
 using SnakeGame.Engine;
 using SnakeGame.Utils;
 
@@ -22,7 +23,7 @@ namespace SnakeGame.Screen
         public override void Init()
         {
             base.Init();
-            Font font = new Font(Resource.arial);
+            Font font = new Font(Resources.arial);
             pauseText = new Text("PAUSE", font)
             {
                 FillColor = Color.White,

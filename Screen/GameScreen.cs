@@ -4,6 +4,7 @@ using SFML.Window;
 using SnakeGame.Core;
 using SnakeGame.Core.Controller;
 using SnakeGame.Core.Player;
+using SnakeGame.Core.Statistic;
 using SnakeGame.Core.Tileset;
 using SnakeGame.Engine;
 using SnakeGame.Utils;
@@ -19,13 +20,12 @@ namespace SnakeGame.Screen
         uint tile_width;
         uint tile_height;
 
-        private Fruit fruit = new Fruit();
+        private Fruit fruit;
         readonly GameSetup setup;
         readonly List<Player> players = new List<Player>();
-        readonly Random random = new Random();
-        Sprite fruitSprite;
-        Tileset tileset;
-        Statistics statistics;
+        static readonly Random random = new Random();
+        private Tileset tileset;
+        private Statistics statistics;
         int roundNumber = 0;
         readonly uint fieldOffset = 65;
 
@@ -109,7 +109,7 @@ namespace SnakeGame.Screen
 
         private void SetupTileset()
         {
-            tileset = new SnakeTileset(new Texture(ImageUtils.BitmapToByteArray(Resource.snake_tileset)));
+            tileset = new SnakeTileset(Resources.snake_tileset);
         }
 
         private void SetupField()
@@ -122,10 +122,9 @@ namespace SnakeGame.Screen
 
         private void SetupFruit()
         {
-            fruit = new Fruit();
-            fruitSprite = tileset.GetTile(SnakeTileset.Tile.FRUIT);
+            var fruitSprite = tileset.GetTile(SnakeTileset.Tile.FRUIT);
             fruitSprite.Color = new Color(255, 100, 100);
-            fruitSprite.Scale = new Vector2f(tile_width / fruitSprite.GetLocalBounds().Width, tile_height / fruitSprite.GetLocalBounds().Height);
+            fruit = new Fruit(fruitSprite, new Vector2u(tile_width, tile_height));
         }
 
         private void SetupSnakes()
@@ -145,7 +144,10 @@ namespace SnakeGame.Screen
 
         private void SetupStatistics()
         {
-            statistics = new Statistics(players, tileset);
+            statistics = new Statistics(players, tileset)
+            {
+                Size = new Vector2f(engine.GetWindow().Size.X, 60)
+            };
             statistics.Position = new Vector2f(engine.GetWindow().Size.X / 2 - statistics.Size.X / 2, 0);
             statistics.RoundCount = setup.RoundCount;
         }
@@ -166,7 +168,7 @@ namespace SnakeGame.Screen
 
         public override void ProcessEvent(Event ev)
         {
-            if (ev.Key.Code == Keyboard.Key.Escape) engine.GetMachine().PushState(new PauseScreen(engine, setup));
+            if (ev.Type == EventType.KeyPressed && ev.Key.Code == Keyboard.Key.Escape) engine.GetMachine().PushState(new PauseScreen(engine, setup));
             players.ForEach(player => player.ProcessEvent(ev));
         }
 
@@ -175,8 +177,7 @@ namespace SnakeGame.Screen
             statistics.Render(target, states);
             states.Transform.Translate(0, fieldOffset);
             players.ForEach(player => player.Render(target, states));
-            fruitSprite.Position = new Vector2f(fruit.X * tile_width, fruit.Y * tile_height);
-            target.Draw(fruitSprite, states);
+            fruit.Render(target, states);
         }
 
         public override void Update(float dt)
@@ -186,15 +187,18 @@ namespace SnakeGame.Screen
                 player.Update(dt);
                 Tick(player.Snake);
             });
+            fruit.Update(dt);
             CheckCollisions();
+            statistics.Update(dt);
             if (IsRoundOver())
             {
                 UpdateScores();
+                statistics.Update(dt);
 
                 if (IsGameOver())
                 {
                     engine.GetMachine().PushState(new GameOverScreen(engine, new GameOverScreen.GameResult(players), setup));
-                } 
+                }
                 else
                 {
                     engine.GetMachine().PushState(new RoundOverScreen(engine, this, new RoundOverScreen.RoundResult(players)));
@@ -208,7 +212,7 @@ namespace SnakeGame.Screen
 
             List<uint> scores = players.Select(player => player.Score).ToList();
             uint maxScore = scores.Max();
-            return maxScore >= (setup.RoundCount + 1) / 2 || roundNumber >= setup.RoundCount;
+            return maxScore >= setup.RoundCount / 2 + 1 || roundNumber >= setup.RoundCount;
         }
 
         private void UpdateScores()

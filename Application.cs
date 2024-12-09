@@ -66,8 +66,7 @@ namespace SnakeGame
 
             engine.GetWindow().SetVerticalSyncEnabled(true);
 
-            Texture texture = new Texture(ImageUtils.BitmapToByteArray(Resource.simple_background));
-            background = new Sprite(texture);
+            background = new Sprite(Resources.simple_background);
             background.Scale = new Vector2f(videoMode.Width / background.GetLocalBounds().Width, videoMode.Height / background.GetLocalBounds().Height);
             states = RenderStates.Default;
             BindEvents();

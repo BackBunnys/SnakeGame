@@ -1,8 +1,11 @@
 ﻿using SFML.Graphics;
 using SFML.System;
 using SFML.Window;
+using SnakeGame.Core;
 using SnakeGame.Engine;
+using SnakeGame.Utils;
 using System;
+using System.Linq;
 
 namespace SnakeGame.Screen
 {
@@ -21,7 +24,7 @@ namespace SnakeGame.Screen
 
         public override void Init()
         {
-            Font font = new Font(Resource.arial);
+            Font font = Resources.arial;
             applicationName = new Text(Resource.ApplicationName, font)
             {
                 CharacterSize = 32,
