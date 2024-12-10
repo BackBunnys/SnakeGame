@@ -1,6 +1,4 @@
-﻿
-using SFML.System;
-using System;
+﻿using SFML.System;
 
 namespace SnakeGame.Core.Controller
 {
