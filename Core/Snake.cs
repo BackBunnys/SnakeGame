@@ -36,18 +36,15 @@ namespace SnakeGame.Core
         {
             this.tileset = tileset;
             SegmentSize = segmentSize;
-            Reset();
+            Reset(new Vector2i(1, 1));
         }
 
-        public void Reset()
+        public void Reset(Vector2i position)
         {
             Dead = false;
             Array values = Enum.GetValues(typeof(MoveDirection));
             _direction = (MoveDirection) values.GetValue(random.Next(values.Length));
-            segments = new List<Vector2f>
-            {
-                new Vector2f(random.Next(5, 15), random.Next(5, 15))
-            };
+            segments = new List<Vector2f> { new Vector2f(position.X, position.Y) };
             segments.Add(segments[0] - Direction.GetVector());
             pendingDirection = _direction;
         }

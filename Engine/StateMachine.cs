@@ -36,8 +36,8 @@ namespace SnakeGame.Engine
 
             public void PushState(IState state)
             {
-                state.Init();
                 states.Push(state);
+                state.Init();
             }
 
             public void ReplaceState(IState state)

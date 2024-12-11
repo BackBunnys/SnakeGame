@@ -65,6 +65,11 @@ namespace SnakeGame.Screen
         {
             List<Snake> snakes = result.Players.Select(player => player.Snake).ToList();
 
+            if (snakes.Count == 1)
+            {
+                return snakes.First().Dead ? "You lost!" : "You won!";
+            }
+
             if (snakes.TrueForAll(snake => snake.Dead))
             {
                 return "Draw!";
@@ -92,8 +97,8 @@ namespace SnakeGame.Screen
         {
             if (clock.ElapsedTime.AsSeconds() > roundOverDurationInSeconds)
             {
-                game.NewRound();
                 engine.GetMachine().PopState();
+                game.NewRound();
             }
         }
 

@@ -1,6 +1,7 @@
 ﻿
 using SFML.System;
 using System;
+using System.Collections.Generic;
 
 namespace SnakeGame.Core.Controller
 {
@@ -14,11 +15,13 @@ namespace SnakeGame.Core.Controller
         }
         public Snake Snake { get; }
         public Fruit Target { get; set; }
+        public List<Block> Blocks { get; set; }
         public Difficulty Strength { get; set; } = Difficulty.NORMAL;
 
-        public SnakeBotController(Snake snake)
+        public SnakeBotController(Snake snake, List<Block> blocks)
         {
             Snake = snake;
+            Blocks = blocks;
         }
 
         public void Update()
@@ -63,7 +66,21 @@ namespace SnakeGame.Core.Controller
                 newDirection = MoveDirectionExtensions.FromVector(new Vector2f(vector.Y, vector.X));
             }
 
-            if (WillCollide(newDirection))
+            if (WillCollideBlocks(newDirection))
+            {
+                foreach (MoveDirection direction in Enum.GetValues(typeof(MoveDirection)))
+                {
+                    if (direction.IsOpposite(Snake.Direction)) continue;
+
+                    if (!WillCollideBlocks(direction))
+                    {
+                        newDirection = direction;
+                        break;
+                    }
+                }
+            }
+
+            if (WillCollideYourself(newDirection))
             {
                 newDirection = GetTaleDirection(Snake.Position + newDirection.GetVector());
             }
@@ -71,7 +88,12 @@ namespace SnakeGame.Core.Controller
             Snake.Direction = newDirection;
         }
 
-        private bool WillCollide(MoveDirection direction)
+        private bool WillCollideBlocks(MoveDirection direction)
+        {
+            return Blocks.Exists(block => block.Position == Snake.Position + direction.GetVector());
+        }
+
+        private bool WillCollideYourself(MoveDirection direction)
         {
             return Snake.Segments.Contains(Snake.Position + direction.GetVector());
         }

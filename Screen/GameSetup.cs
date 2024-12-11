@@ -14,5 +14,6 @@ namespace SnakeGame.Screen
         public GameType Type { get; set; } = GameType.SINGLEPLAYER;
         public bool VersusBot { get; set; } = false;
         public Vector2u FieldSize { get; set; } = new Vector2u(34, 20);
+        public uint BlockCount { get; set; } = 5;
     }
 }
