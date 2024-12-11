@@ -11,6 +11,7 @@ using SnakeGame.Utils;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using static SnakeGame.Screen.GameSetup;
 
 namespace SnakeGame.Screen
 {
@@ -138,7 +139,7 @@ namespace SnakeGame.Screen
 
         private void SetupBlock()
         {
-            for (int i = 0; i < setup.BlockCount; ++i)
+            for (int i = 0; i < M * N * setup.Difficulty.GetBlockFactor(); ++i)
             {
                 blocks.Add(new Block(new Sprite(Resources.block), new Vector2f(tile_width, tile_height)));
             }
@@ -171,17 +172,27 @@ namespace SnakeGame.Screen
 
         private void SetupSnakes()
         {
-            Snake snake = new Snake(tileset, new Vector2u(tile_width, tile_height));
-            players.Add(new HumanPlayer(snake, new SnakeKeyboardController(DefaultKeyboardBindings.PLAYER_ONE, snake)) { Name = "Player 1" });
+           
+            setup.Players.ForEach(playerSetup =>
+                {
+                    Snake snake = CreateSnake();
+                    if (playerSetup is HumanPlayerSetup)
+                    {
+                        HumanPlayerSetup humanSetup = playerSetup as HumanPlayerSetup;
+                        players.Add(new HumanPlayer(snake, new SnakeKeyboardController(humanSetup.Bindings, snake)) { Name = playerSetup.Name, Color = playerSetup.Color });
+                    }
+                    if (playerSetup is BotPlayerSetup)
+                    {
+                        players.Add(new BotPlayer(snake, new SnakeBotController(snake, blocks) { Target = fruit, Strength = setup.Difficulty.GetBotDifficulty() }) { Name = playerSetup.Name, Color = playerSetup.Color });
+                    }
+                });
+        }
 
-            if (setup.Type == GameSetup.GameType.MULTIPLAYER)
-            {
-                Snake secondSnake = new Snake(tileset, new Vector2u(tile_width, tile_height));
-                if (setup.VersusBot)
-                    players.Add(new BotPlayer(secondSnake, new SnakeBotController(secondSnake, blocks) { Target = fruit }) { Name = "Bot", Color = Color.Yellow });
-                else 
-                    players.Add(new HumanPlayer(secondSnake, new SnakeKeyboardController(DefaultKeyboardBindings.PLAYER_TWO, secondSnake)) { Name = "Player 2", Color = new Color(255, 165, 0) });
-            }
+        private Snake CreateSnake()
+        {
+            Snake snake = new Snake(tileset, new Vector2u(tile_width, tile_height));
+            snake.Speed *= setup.Difficulty.GetSpeedFactor();
+            return snake;
         }
 
         private void SetupStatistics()
@@ -211,7 +222,6 @@ namespace SnakeGame.Screen
             {
                 var newPosition = GetSpawnPosition();
                 block.Position = new Vector2f(newPosition.X, newPosition.Y);
-
             }
         }
 

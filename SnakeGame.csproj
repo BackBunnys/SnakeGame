@@ -141,6 +141,7 @@
     <Compile Include="Screen\PauseScreen.cs" />
     <Compile Include="Core\Snake.cs" />
     <Compile Include="Screen\RoundOverScreen.cs" />
+    <Compile Include="Utils\GameSetupExtensions.cs" />
     <Compile Include="Utils\ImageUtils.cs" />
     <Compile Include="Utils\Resources.cs" />
     <Compile Include="Utils\SFMLExtensions.cs" />

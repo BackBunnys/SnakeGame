@@ -64,7 +64,7 @@ namespace SnakeGame.Core.Statistic
 
             for (int i = 0; i < playerStatistics.Count; ++i)
             {
-                var offset = statisticsBox.GetGlobalBounds().Width / 4 *(i + i * 2);
+                var offset = statisticsBox.GetGlobalBounds().Width / 4 *(i + i * 2) + i * -20;
                 playerStatistics[i].Position = statisticsBox.Position + new Vector2f(offset, 10);
             }
         }

@@ -1,11 +1,11 @@
 ﻿using SFML.Graphics;
 using SFML.System;
 using SFML.Window;
-using SnakeGame.Core;
 using SnakeGame.Engine;
 using SnakeGame.Utils;
 using System;
-using System.Linq;
+using System.Collections.Generic;
+using static SnakeGame.Screen.GameSetup;
 
 namespace SnakeGame.Screen
 {
@@ -45,13 +45,13 @@ namespace SnakeGame.Screen
         {
             if (ev.Type == EventType.KeyPressed)
             {
-                if (ev.Key.Code == Keyboard.Key.S) gameSetup.Type = GameSetup.GameType.SINGLEPLAYER;
-                if (ev.Key.Code == Keyboard.Key.M) gameSetup.Type = GameSetup.GameType.MULTIPLAYER;
-                if (ev.Key.Code == Keyboard.Key.B) gameSetup.VersusBot = true;
-                if (ev.Key.Code == Keyboard.Key.P) gameSetup.VersusBot = false;
+                if (ev.Key.Code == Keyboard.Key.S) gameSetup.Players = new List<PlayerSetup>() { HumanPlayerSetup.PLAYER_ONE };
+                if (ev.Key.Code == Keyboard.Key.M) gameSetup.Players = new List<PlayerSetup>() { HumanPlayerSetup.PLAYER_ONE, HumanPlayerSetup.PLAYER_TWO };
+                if (ev.Key.Code == Keyboard.Key.B) gameSetup.Players = new List<PlayerSetup>() { HumanPlayerSetup.PLAYER_ONE, BotPlayerSetup.BOT_SETUP };
                 if ((uint) ev.Key.Code >= (uint) Keyboard.Key.Num0 && (uint) ev.Key.Code <= (uint) Keyboard.Key.Num9) roundCountInput += ev.Key.Code.ToString().Replace("Num", "");
-                if (ev.Key.Code == Keyboard.Key.Up) gameSetup.BlockCount = Math.Min(gameSetup.BlockCount + 2, 50);
-                if (ev.Key.Code == Keyboard.Key.Down) gameSetup.BlockCount = Math.Max(gameSetup.BlockCount - 2, 0);
+                if (ev.Key.Code == Keyboard.Key.E) gameSetup.Difficulty = GameDifficulty.EASY;
+                if (ev.Key.Code == Keyboard.Key.N) gameSetup.Difficulty = GameDifficulty.NORMAL;
+                if (ev.Key.Code == Keyboard.Key.H) gameSetup.Difficulty = GameDifficulty.HARD;
             }
         }
 
