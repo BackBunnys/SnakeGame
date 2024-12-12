@@ -17,8 +17,8 @@ namespace SnakeGame.Engine
         public abstract void Init();
 
         public abstract void ProcessEvent(Event ev);
-        public abstract void Update();
-        public abstract void Render(RenderTarget target);
+        public abstract void Update(float dt);
+        public abstract void Render(RenderTarget target, RenderStates states);
 
         public virtual string GetDescription()
         {

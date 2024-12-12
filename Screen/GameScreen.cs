@@ -1,146 +1,314 @@
 ﻿using SFML.Graphics;
 using SFML.System;
 using SFML.Window;
+using SnakeGame.Core;
+using SnakeGame.Core.Controller;
+using SnakeGame.Core.Player;
+using SnakeGame.Core.Statistic;
+using SnakeGame.Core.Tileset;
 using SnakeGame.Engine;
+using SnakeGame.Utils;
 using System;
-using System.IO;
+using System.Collections.Generic;
+using System.Linq;
+using static SnakeGame.Screen.GameSetup;
 
 namespace SnakeGame.Screen
 {
     class GameScreen : IState //TODO: refactor
     {
-        struct Snake
-        {
-            public float x, y;
-        }
-
-        struct Fruct
-        {
-            public float x, y;
-        }
-
-        const uint N = 40, M = 30;
+        uint N = 34, M = 20;
         uint tile_width;
         uint tile_height;
 
-        int direction, num = 4;
-        Clock clock;
-        float timer, delay;
-        private Fruct fruit;
-        private Snake[] snake;
-        Random random = new Random();
-        Sprite snakeSprite;
-        Sprite fruitSprite;
-        Sprite fieldSprite;
+        private Spawner spawner;
+        private Fruit fruit;
+        readonly GameSetup setup;
+        readonly List<Player> players = new List<Player>();
+        private readonly List<Block> blocks = new List<Block>();
+        private Tileset tileset;
+        private Statistics statistics;
+        int roundNumber = 0;
+        readonly uint fieldOffset = 65;
 
-
-        void Tick(ref Snake[] s, ref Fruct f)
+        void Tick(Snake snake)
         {
-            for (int i = num; i > 0; --i)
+
+            if ((snake.Position.X == fruit.X) && (snake.Position.Y == fruit.Y))
             {
-                s[i].x = s[i - 1].x;
-                s[i].y = s[i - 1].y;
+                snake.GrowUp();
+                RespawnFruit();
             }
 
-            if (direction == 0) s[0].y += 1;
-            if (direction == 1) s[0].x -= 1;
-            if (direction == 2) s[0].x += 1;
-            if (direction == 3) s[0].y -= 1;
-
-            if ((s[0].x == f.x) && (s[0].y == f.y))
+            if (snake.Position.X >= N || snake.Position.X < 0)
             {
-                num++;
-                f.x = random.Next() % N;
-                f.y = random.Next() % M;
+                snake.Dead = true;
             }
-
-            if (s[0].x >= N) s[0].x = 0; if (s[0].x < 0) s[0].x = N;
-            if (s[0].y >= M) s[0].y = 0; if (s[0].y < 0) s[0].y = M;
-
-            for (int i = 1; i < num; i++)
-                if (s[0].x == s[i].x && s[0].y == s[i].y) num = i;
+            if (snake.Position.Y >= M || snake.Position.Y < 0)
+            {
+                snake.Dead = true;
+            }
         }
-       
 
-        public GameScreen(GameEngine appData) : base(appData)
+        private bool IsRoundOver()
         {
+            if (players.Count > 1)
+            {
+                if (players.FindAll(player => !player.Snake.Dead).Count <= 1)
+                {
+                    return true;
+                }
+            }
+            else
+            {
+                if (players[0].Snake.Dead)
+                {
+                    return true;
+                }
+            }
+
+            if (players.Select(player => player.Snake.Segments.Count).Sum() == N * M - blocks.Count)
+            {
+                return true;
+            }
+
+            return false;
+        }
+
+        private void CheckCollisions()
+        {
+            List<Vector2f> heads = new List<Vector2f>();
+            players.ForEach(player => heads.Add(player.Snake.Position));
+
+            foreach(var player in players)
+            {
+                if (blocks.Exists(block => player.Snake.Position == block.Position))
+                {
+                    player.Snake.Dead = true;
+                }
+            }
+
+            foreach (Player player in players)
+            {
+                for (int i = 0; i < heads.Count; ++i)
+                {
+                    var headPosition = player.Snake.Segments.FindLastIndex(segment => segment == heads[i]);
+                    if (headPosition > 0)
+                    {
+                        players[i].Snake.Dead = true;
+                        return;
+                    }
+                    else if (headPosition == 0)
+                    {
+                        if (player.Snake != players[i].Snake) //Head collision with another snake
+                        {
+                            if (players[i] is BotPlayer && player is BotPlayer) //Both are bots
+                            {
+                                players[i].Snake.Dead = true;
+                                player.Snake.Dead = true;
+                                return;
+                            }
+
+                            if (!(players[i] is BotPlayer)) //first are not bot
+                            {
+                                players[i].Snake.Dead = true;
+                            }
+
+                            if (!(player is BotPlayer)) //second are not bot
+                            {
+                                player.Snake.Dead = true;
+                            }
+                        }
+                    }
+                }   
+            }
+        }
+
+        public GameScreen(GameEngine appData, GameSetup gameSetup) : base(appData)
+        {
+            setup = gameSetup;
         }
 
         public override void Init()
         {
-            clock = new Clock();
-            timer = 0;
-            delay = 0.1f;
-            tile_width = engine.GetWindow().Size.X / N;
-            tile_height = engine.GetWindow().Size.Y / M;
+            SetupTileset();
+            SetupField();
+            SetupFruit();
+            SetupSnakes();
+            SetupStatistics();
+            SetupBlock();
+            SetupSpawner();
 
-            fruit = new Fruct();
-            snake = new Snake[100];
-            for (int i = 0; i < snake.Length; i++)
-            {
-                snake[i] = new Snake();
-            }
-
-            fruit.x = 10;
-            fruit.y = 10;
-
-
-            Texture snakeTexture = new Texture(ImageToByte(Resource.green));
-            Texture fruitTexture = new Texture(ImageToByte(Resource.red));
-            Texture fieldTexture = new Texture(ImageToByte(Resource.white));
-            snakeSprite = new Sprite(snakeTexture);
-            fruitSprite = new Sprite(fruitTexture);
-            fieldSprite = new Sprite(fieldTexture);
+            NewRound();
         }
 
-        public static byte[] ImageToByte(System.Drawing.Bitmap img)
+        private void SetupBlock()
         {
-            using (var stream = new MemoryStream())
+            for (int i = 0; i < M * N * setup.Difficulty.GetBlockFactor(); ++i)
             {
-                img.Save(stream, System.Drawing.Imaging.ImageFormat.Png);
-                return stream.ToArray();
+                blocks.Add(new Block(new Sprite(Resources.block), new Vector2f(tile_width, tile_height)));
             }
+        }
+
+        private void SetupSpawner()
+        {
+            spawner = new Spawner(new IntRect(new Vector2i(), new Vector2i((int) N, (int) M)));
+        }
+
+        private void SetupTileset()
+        {
+            tileset = new SnakeTileset(Resources.snake_tileset);
+        }
+
+        private void SetupField()
+        {
+            N = setup.FieldSize.X;
+            M = setup.FieldSize.Y;
+            tile_width = engine.GetWindow().Size.X / N;
+            tile_height = (engine.GetWindow().Size.Y - fieldOffset) / M;
+        }
+
+        private void SetupFruit()
+        {
+            var fruitSprite = tileset.GetTile(SnakeTileset.Tile.FRUIT);
+            fruitSprite.Color = new Color(255, 100, 100);
+            fruit = new Fruit(fruitSprite, new Vector2u(tile_width, tile_height));
+        }
+
+        private void SetupSnakes()
+        {
+           
+            setup.Players.ForEach(playerSetup =>
+                {
+                    Snake snake = CreateSnake();
+                    if (playerSetup is HumanPlayerSetup humanSetup)
+                    {
+                        players.Add(new HumanPlayer(snake, new SnakeKeyboardController(humanSetup.Bindings, snake)) { Name = playerSetup.Name, Color = playerSetup.Color });
+                    }
+                    if (playerSetup is BotPlayerSetup botSetup)
+                    {
+                        players.Add(new BotPlayer(snake, new SnakeBotController(snake, blocks) { Target = fruit, Strength = setup.Difficulty.GetBotDifficulty() }) { Name = playerSetup.Name, Color = playerSetup.Color });
+                    }
+                });
+        }
+
+        private Snake CreateSnake()
+        {
+            Snake snake = new Snake(tileset, new Vector2u(tile_width, tile_height));
+            snake.Speed *= setup.Difficulty.GetSpeedFactor();
+            return snake;
+        }
+
+        private void SetupStatistics()
+        {
+            statistics = new Statistics(players, tileset)
+            {
+                Size = new Vector2f(engine.GetWindow().Size.X, 60)
+            };
+            statistics.Position = new Vector2f(engine.GetWindow().Size.X / 2 - statistics.Size.X / 2, 0);
+            statistics.RoundCount = setup.RoundCount;
+        }
+
+        public void NewRound()
+        {
+            RespawnFruit();
+            RespawnBlock();
+            players.ForEach(player => player.Snake.Reset(GetSpawnPosition()));
+            roundNumber++;
+            statistics.Round = roundNumber;
+            Update(0);
+            engine.GetMachine().PushState(new CountDownScreen(engine));
+        }
+
+        private void RespawnBlock()
+        {
+            foreach (Block block in blocks)
+            {
+                var newPosition = GetSpawnPosition();
+                block.Position = new Vector2f(newPosition.X, newPosition.Y);
+            }
+        }
+
+        private void RespawnFruit()
+        {
+            var newPosition = GetSpawnPosition();
+            fruit.X = newPosition.X;
+            fruit.Y = newPosition.Y;
+        }
+
+        private Vector2i GetSpawnPosition()
+        {
+            List<Vector2i> restrictedAreas = new List<Vector2i>() { new Vector2i((int)fruit.X, (int)fruit.Y) };
+            players.ForEach(player => restrictedAreas.Add(new Vector2i((int)player.Snake.Position.X, (int)player.Snake.Position.Y)));
+            blocks.ForEach(block => restrictedAreas.Add(new Vector2i((int)block.Position.X, (int)block.Position.Y)));
+            return spawner.GetSpawnPosition(restrictedAreas);
         }
 
         public override void ProcessEvent(Event ev)
         {
-            
-        }
-
-        public override void Render(RenderTarget target)
-        {
-
-            for (int i = 0; i < N; i++)
-                for (int j = 0; j < M; j++)
-                {
-                    fieldSprite.Position = new Vector2f(i * tile_width, j * tile_height);
-                    target.Draw(fieldSprite);
-                }
-
-            for (int i = 0; i < num; i++)
+            if (ev.Type == EventType.KeyPressed && ev.Key.Code == Keyboard.Key.Escape)
             {
-                snakeSprite.Position = new Vector2f(snake[i].x * tile_width, snake[i].y * tile_height);
-                target.Draw(snakeSprite);
+                engine.GetMachine().PushState(new PauseScreen(engine, setup));
             }
 
-            fruitSprite.Position = new Vector2f(fruit.x * tile_width, fruit.y * tile_height);
-            target.Draw(fruitSprite);
+            players.ForEach(player => player.ProcessEvent(ev));
         }
 
-        public override void Update()
+        public override void Render(RenderTarget target, RenderStates states)
         {
-            float time = clock.ElapsedTime.AsSeconds();
-            clock.Restart();
-            timer += time;
+            statistics.Render(target, states);
+            states.Transform.Translate(0, fieldOffset);
+            players.ForEach(player => player.Render(target, states));
+            blocks.ForEach(block => block.Render(target, states));
+            fruit.Render(target, states);
+        }
 
-            if (Keyboard.IsKeyPressed(Keyboard.Key.A)) direction = 1;
-            if (Keyboard.IsKeyPressed(Keyboard.Key.D)) direction = 2;
-            if (Keyboard.IsKeyPressed(Keyboard.Key.W)) direction = 3;
-            if (Keyboard.IsKeyPressed(Keyboard.Key.S)) direction = 0;
+        public override void Update(float dt)
+        {
+            players.ForEach(player =>
+            {
+                player.Update(dt);
+                Tick(player.Snake);
+            });
+            fruit.Update(dt);
+            blocks.ForEach(block => block.Update(dt));
+            CheckCollisions();
+            statistics.Update(dt);
+            if (IsRoundOver())
+            {
+                UpdateScores();
+                statistics.Update(dt);
 
-            if (timer > delay) { 
-                timer = 0; 
-                Tick(ref snake, ref fruit); 
+                if (IsGameOver())
+                {
+                    engine.GetMachine().PushState(new GameOverScreen(engine, new GameOverScreen.GameResult(players), setup));
+                }
+                else
+                {
+                    engine.GetMachine().PushState(new RoundOverScreen(engine, this, new RoundOverScreen.RoundResult(players)));
+                }
+            }
+        }
+
+        private bool IsGameOver()
+        {
+            if (setup.RoundCount == null)
+            {
+                return false;
+            }
+
+            List<uint> scores = players.Select(player => player.Score).ToList();
+            uint maxScore = scores.Max();
+            return maxScore >= setup.RoundCount / 2 + 1 || roundNumber >= setup.RoundCount;
+        }
+
+        private void UpdateScores()
+        {
+            List<Player> alivePlayers = players.FindAll(player => !player.Snake.Dead);
+            if (alivePlayers.Count > 0)
+            {
+                var (maxScore, index) = alivePlayers.Select((player, i) => (player.Snake.Eated, i)).Max();
+                alivePlayers[index].Score++;
             }
         }
     }

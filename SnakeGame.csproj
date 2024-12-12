@@ -1,5 +1,6 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="15.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <Import Project="packages\CSFML.2.6.1\build\netframework\CSFML.props" Condition="Exists('packages\CSFML.2.6.1\build\netframework\CSFML.props')" />
   <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
@@ -14,6 +15,22 @@
     <Deterministic>true</Deterministic>
     <NuGetPackageImportStamp>
     </NuGetPackageImportStamp>
+    <IsWebBootstrapper>false</IsWebBootstrapper>
+    <PublishUrl>Z:\Publish\</PublishUrl>
+    <Install>true</Install>
+    <InstallFrom>Disk</InstallFrom>
+    <UpdateEnabled>false</UpdateEnabled>
+    <UpdateMode>Foreground</UpdateMode>
+    <UpdateInterval>7</UpdateInterval>
+    <UpdateIntervalUnits>Days</UpdateIntervalUnits>
+    <UpdatePeriodically>false</UpdatePeriodically>
+    <UpdateRequired>false</UpdateRequired>
+    <MapFileExtensions>true</MapFileExtensions>
+    <ApplicationRevision>1</ApplicationRevision>
+    <ApplicationVersion>1.0.0.%2a</ApplicationVersion>
+    <UseApplicationTrust>false</UseApplicationTrust>
+    <PublishWizardCompleted>true</PublishWizardCompleted>
+    <BootstrapperEnabled>true</BootstrapperEnabled>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <PlatformTarget>AnyCPU</PlatformTarget>
@@ -74,12 +91,41 @@
     <ErrorReport>prompt</ErrorReport>
     <Prefer32Bit>true</Prefer32Bit>
   </PropertyGroup>
+  <PropertyGroup>
+    <ManifestCertificateThumbprint>5CB54B1618F8E4286692709710231A1CA23B5F64</ManifestCertificateThumbprint>
+  </PropertyGroup>
+  <PropertyGroup>
+    <ManifestKeyFile>SnakeGame_TemporaryKey.pfx</ManifestKeyFile>
+  </PropertyGroup>
+  <PropertyGroup>
+    <GenerateManifests>true</GenerateManifests>
+  </PropertyGroup>
+  <PropertyGroup>
+    <SignManifests>true</SignManifests>
+  </PropertyGroup>
   <ItemGroup>
     <None Include="App.config" />
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Application.cs" />
+    <Compile Include="Core\Block.cs" />
+    <Compile Include="Core\Controller\DefaultKeyboardBindings.cs" />
+    <Compile Include="Core\Controller\SnakeBotController.cs" />
+    <Compile Include="Core\Controller\SnakeKeyboardController.cs" />
+    <Compile Include="Core\Fruit.cs" />
+    <Compile Include="Core\IComponent.cs" />
+    <Compile Include="Core\MoveDirection.cs" />
+    <Compile Include="Core\MoveSpeed.cs" />
+    <Compile Include="Core\Player\BotPlayer.cs" />
+    <Compile Include="Core\Player\HumanPlayer.cs" />
+    <Compile Include="Core\Player\Player.cs" />
+    <Compile Include="Core\Statistic\PlayerStatistics.cs" />
+    <Compile Include="Core\Spawner.cs" />
+    <Compile Include="Core\Tileset\SnakeTileset.cs" />
+    <Compile Include="Core\Statistic\Statistics.cs" />
     <Compile Include="Engine\GameEngine.cs" />
+    <Compile Include="Screen\CountDownScreen.cs" />
+    <Compile Include="Screen\GameOverScreen.cs" />
     <Compile Include="Engine\IState.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Engine\StateMachine.cs" />
@@ -89,20 +135,30 @@
       <DependentUpon>Resource.resx</DependentUpon>
     </Compile>
     <Compile Include="Screen\GameScreen.cs" />
+    <Compile Include="Screen\GameSetup.cs" />
     <Compile Include="Screen\IntroScreen.cs" />
+    <Compile Include="Screen\OverlayScreen.cs" />
+    <Compile Include="Screen\PauseScreen.cs" />
+    <Compile Include="Core\Snake.cs" />
+    <Compile Include="Screen\RoundOverScreen.cs" />
+    <Compile Include="Utils\GameSetupExtensions.cs" />
+    <Compile Include="Utils\ImageUtils.cs" />
+    <Compile Include="Utils\Resources.cs" />
+    <Compile Include="Utils\SFMLExtensions.cs" />
+    <Compile Include="Utils\Tileset.cs" />
   </ItemGroup>
   <ItemGroup>
-    <Reference Include="sfml-audio">
-      <HintPath>..\..\..\Desktop\SFML.Net-2.4\lib\sfml-audio.dll</HintPath>
+    <Reference Include="SFML.Audio, Version=2.6.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>packages\SFML.Audio.2.6.0\lib\netstandard2.0\SFML.Audio.dll</HintPath>
     </Reference>
-    <Reference Include="sfml-graphics">
-      <HintPath>..\..\..\Desktop\SFML.Net-2.4\lib\sfml-graphics.dll</HintPath>
+    <Reference Include="SFML.Graphics, Version=2.6.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>packages\SFML.Graphics.2.6.0\lib\netstandard2.0\SFML.Graphics.dll</HintPath>
     </Reference>
-    <Reference Include="sfml-system">
-      <HintPath>..\..\..\Desktop\SFML.Net-2.4\lib\sfml-system.dll</HintPath>
+    <Reference Include="SFML.System, Version=2.6.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>packages\SFML.System.2.6.0\lib\netstandard2.0\SFML.System.dll</HintPath>
     </Reference>
-    <Reference Include="sfml-window">
-      <HintPath>..\..\..\Desktop\SFML.Net-2.4\lib\sfml-window.dll</HintPath>
+    <Reference Include="SFML.Window, Version=2.6.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>packages\SFML.Window.2.6.0\lib\netstandard2.0\SFML.Window.dll</HintPath>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Drawing" />
@@ -116,34 +172,39 @@
     </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>
+    <None Include="packages.config" />
     <None Include="Resources\arial.ttf" />
-    <None Include="Resources\green.png" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="Resources\white.png" />
+    <None Include="Resources\PressStart2P-Regular.ttf" />
+    <None Include="Resources\simple_background.png" />
+    <None Include="Resources\snake-tileset.png" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="Resources\red.png" />
+    <BootstrapperPackage Include=".NETFramework,Version=v4.7.2">
+      <Visible>False</Visible>
+      <ProductName>Microsoft .NET Framework 4.7.2 %28x86 и x64%29</ProductName>
+      <Install>true</Install>
+    </BootstrapperPackage>
+    <BootstrapperPackage Include="Microsoft.Net.Framework.3.5.SP1">
+      <Visible>False</Visible>
+      <ProductName>.NET Framework 3.5 SP1</ProductName>
+      <Install>false</Install>
+    </BootstrapperPackage>
   </ItemGroup>
   <ItemGroup>
-    <Content Include="csfml-audio-2.dll">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="csfml-graphics-2.dll">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="csfml-system-2.dll">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="csfml-window-2.dll">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="openal32.dll">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="OpenTK.dll">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
+    <None Include="Resources\block.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\background.png" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">
+    <PropertyGroup>
+      <ErrorText>Данный проект ссылается на пакеты NuGet, отсутствующие на этом компьютере. Используйте восстановление пакетов NuGet, чтобы скачать их.  Дополнительную информацию см. по адресу: http://go.microsoft.com/fwlink/?LinkID=322105. Отсутствует следующий файл: {0}.</ErrorText>
+    </PropertyGroup>
+    <Error Condition="!Exists('packages\CSFML.2.6.1\build\netframework\CSFML.props')" Text="$([System.String]::Format('$(ErrorText)', 'packages\CSFML.2.6.1\build\netframework\CSFML.props'))" />
+    <Error Condition="!Exists('packages\CSFML.2.6.1\build\netframework\CSFML.targets')" Text="$([System.String]::Format('$(ErrorText)', 'packages\CSFML.2.6.1\build\netframework\CSFML.targets'))" />
+  </Target>
+  <Import Project="packages\CSFML.2.6.1\build\netframework\CSFML.targets" Condition="Exists('packages\CSFML.2.6.1\build\netframework\CSFML.targets')" />
 </Project>

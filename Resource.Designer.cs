@@ -61,6 +61,24 @@ namespace SnakeGame {
         }
         
         /// <summary>
+        ///   Ищет локализованную строку, похожую на Snake Game.
+        /// </summary>
+        internal static string ApplicationName {
+            get {
+                return ResourceManager.GetString("ApplicationName", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Ищет локализованную строку, похожую на 1.0.
+        /// </summary>
+        internal static string ApplicationVersion {
+            get {
+                return ResourceManager.GetString("ApplicationVersion", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Поиск локализованного ресурса типа System.Byte[].
         /// </summary>
         internal static byte[] arial {
@@ -73,9 +91,9 @@ namespace SnakeGame {
         /// <summary>
         ///   Поиск локализованного ресурса типа System.Drawing.Bitmap.
         /// </summary>
-        internal static System.Drawing.Bitmap green {
+        internal static System.Drawing.Bitmap background {
             get {
-                object obj = ResourceManager.GetObject("green", resourceCulture);
+                object obj = ResourceManager.GetObject("background", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
             }
         }
@@ -83,9 +101,9 @@ namespace SnakeGame {
         /// <summary>
         ///   Поиск локализованного ресурса типа System.Drawing.Bitmap.
         /// </summary>
-        internal static System.Drawing.Bitmap red {
+        internal static System.Drawing.Bitmap block {
             get {
-                object obj = ResourceManager.GetObject("red", resourceCulture);
+                object obj = ResourceManager.GetObject("block", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
             }
         }
@@ -93,9 +111,19 @@ namespace SnakeGame {
         /// <summary>
         ///   Поиск локализованного ресурса типа System.Drawing.Bitmap.
         /// </summary>
-        internal static System.Drawing.Bitmap white {
+        internal static System.Drawing.Bitmap simple_background {
             get {
-                object obj = ResourceManager.GetObject("white", resourceCulture);
+                object obj = ResourceManager.GetObject("simple_background", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Поиск локализованного ресурса типа System.Drawing.Bitmap.
+        /// </summary>
+        internal static System.Drawing.Bitmap snake_tileset {
+            get {
+                object obj = ResourceManager.GetObject("snake_tileset", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
             }
         }

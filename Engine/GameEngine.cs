@@ -8,7 +8,6 @@ namespace SnakeGame.Engine
     {
         private StateMachine machine;
         private RenderWindow window;
-        private Vector2i mousePosition;
 
         public GameEngine(VideoMode videoMode)
         {
@@ -25,13 +24,6 @@ namespace SnakeGame.Engine
         {
             window = new RenderWindow(videoMode, "Snake");
             window.SetFramerateLimit(60);
-        }
-
-        public Vector2i GetMouseDelta<T>(Vector2i mousePos)
-        {
-            Vector2i delta = mousePos - mousePosition;
-            mousePosition = mousePos;
-            return delta;
         }
 
         public RenderWindow GetWindow()
