@@ -66,7 +66,7 @@ namespace SnakeGame
 
             engine.GetWindow().SetVerticalSyncEnabled(true);
 
-            background = new Sprite(Resources.simple_background);
+            background = new Sprite(Resources.background);
             background.Scale = new Vector2f(videoMode.Width / background.GetLocalBounds().Width, videoMode.Height / background.GetLocalBounds().Height);
             states = RenderStates.Default;
             BindEvents();
@@ -98,7 +98,9 @@ namespace SnakeGame
                 engine.GetWindow().Draw(background);
 
                 if (!engine.GetMachine().IsEmpty())
+                {
                     engine.GetMachine().GetCurrentState().Render(engine.GetWindow(), states);
+                }
 
                 engine.GetWindow().Display();
             }

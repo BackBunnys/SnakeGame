@@ -15,7 +15,7 @@ namespace SnakeGame.Core.Player
 
         public override void ProcessEvent(Event ev)
         {
-            
+            //Ignores the input, automatic control
         }
 
         public override void Update(float dt)

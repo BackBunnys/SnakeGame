@@ -2,7 +2,7 @@
 
 namespace SnakeGame
 {
-    class Program
+    static class Program
     {
         static void Main()
         {

@@ -179,7 +179,6 @@
     <None Include="Resources\PressStart2P-Regular.ttf" />
     <None Include="Resources\simple_background.png" />
     <None Include="Resources\snake-tileset.png" />
-    <None Include="Resources\background.png" />
   </ItemGroup>
   <ItemGroup>
     <BootstrapperPackage Include=".NETFramework,Version=v4.7.2">
@@ -195,6 +194,9 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="Resources\block.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\background.png" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">
