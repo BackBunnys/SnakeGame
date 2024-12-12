@@ -10,7 +10,7 @@ namespace SnakeGame.Core.Player
         public uint Score { get; set; } = 0;
         public Snake Snake { get; private set; }
 
-        public Player(Snake snake)
+        protected Player(Snake snake)
         {
             Snake = snake;
         }

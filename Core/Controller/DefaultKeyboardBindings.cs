@@ -3,9 +3,9 @@ using System.Collections.Generic;
 
 namespace SnakeGame.Core.Controller
 {
-    class DefaultKeyboardBindings
+    static class DefaultKeyboardBindings
     {
-        public static Dictionary<Keyboard.Key, MoveDirection> PLAYER_ONE = new Dictionary<Keyboard.Key, MoveDirection>()
+        public static readonly Dictionary<Keyboard.Key, MoveDirection> PLAYER_ONE = new Dictionary<Keyboard.Key, MoveDirection>()
                 {
                     {Keyboard.Key.W, MoveDirection.UP },
                     {Keyboard.Key.S, MoveDirection.DOWN },
@@ -14,7 +14,7 @@ namespace SnakeGame.Core.Controller
 
                 };
 
-        public static Dictionary<Keyboard.Key, MoveDirection> PLAYER_TWO = new Dictionary<Keyboard.Key, MoveDirection>()
+        public static readonly Dictionary<Keyboard.Key, MoveDirection> PLAYER_TWO = new Dictionary<Keyboard.Key, MoveDirection>()
                 {
                     {Keyboard.Key.Up, MoveDirection.UP },
                     {Keyboard.Key.Down, MoveDirection.DOWN },

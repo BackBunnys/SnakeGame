@@ -51,10 +51,16 @@ namespace SnakeGame.Core
 
         public void Update(float dt)
         {
-            if (Dead) return;
+            if (Dead)
+            {
+                return;
+            }
 
             time += dt;
-            if (time < delay / Movement.GetFactor()) return;
+            if (time < delay / Movement.GetFactor())
+            {
+                return;
+            }
 
             time = 0;
             _direction = pendingDirection;
@@ -98,6 +104,9 @@ namespace SnakeGame.Core
                             tile = Tile.HEAD_UP;
                             break;
                         case MoveDirection.DOWN:
+                            tile = Tile.HEAD_DOWN;
+                            break;
+                        default:
                             tile = Tile.HEAD_DOWN;
                             break;
                     }

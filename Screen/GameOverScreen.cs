@@ -78,8 +78,7 @@ namespace SnakeGame.Screen
             if (result.Players.Count == 1) //Singleplayer
             {
                 Snake snake = result.Players[0].Snake;
-                if (snake.Dead) return "You lost!";
-                else return "You won!";
+                return snake.Dead ? "You lost!" : "You won!";
             }
 
             //Multiplayer
@@ -133,7 +132,7 @@ namespace SnakeGame.Screen
 
         public override void Update(float dt)
         {
-           
+           //Do not updates
         }
     }
 }

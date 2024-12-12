@@ -25,15 +25,15 @@ namespace SnakeGame.Screen
         public class HumanPlayerSetup : PlayerSetup
         {
 
-            public static HumanPlayerSetup PLAYER_ONE = new HumanPlayerSetup() { Name = "Player 1", Color = Color.Green, Bindings = DefaultKeyboardBindings.PLAYER_ONE };
-            public static HumanPlayerSetup PLAYER_TWO = new HumanPlayerSetup() { Name = "Player 2", Color = new Color(255, 165, 0), Bindings = DefaultKeyboardBindings.PLAYER_TWO };
+            public static readonly HumanPlayerSetup PLAYER_ONE = new HumanPlayerSetup() { Name = "Player 1", Color = Color.Green, Bindings = DefaultKeyboardBindings.PLAYER_ONE };
+            public static readonly HumanPlayerSetup PLAYER_TWO = new HumanPlayerSetup() { Name = "Player 2", Color = new Color(255, 165, 0), Bindings = DefaultKeyboardBindings.PLAYER_TWO };
             public Dictionary<Keyboard.Key, MoveDirection> Bindings { get; set; }
 
         }
 
         public class BotPlayerSetup : PlayerSetup
         {
-            public static BotPlayerSetup BOT_SETUP = new BotPlayerSetup() { Name = "Bot", Color = Color.Yellow };
+            public static readonly BotPlayerSetup BOT_SETUP = new BotPlayerSetup() { Name = "Bot", Color = Color.Yellow };
         }
 
         public uint? RoundCount { get; set; } = 1;

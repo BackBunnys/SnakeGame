@@ -124,7 +124,7 @@
     <Compile Include="Core\Tileset\SnakeTileset.cs" />
     <Compile Include="Core\Statistic\Statistics.cs" />
     <Compile Include="Engine\GameEngine.cs" />
-    <Compile Include="Screen\CountDownScene.cs" />
+    <Compile Include="Screen\CountDownScreen.cs" />
     <Compile Include="Screen\GameOverScreen.cs" />
     <Compile Include="Engine\IState.cs" />
     <Compile Include="Program.cs" />

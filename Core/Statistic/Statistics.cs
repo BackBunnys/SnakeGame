@@ -59,8 +59,15 @@ namespace SnakeGame.Core.Statistic
 
         private void ResetPositions()
         {
-            if (roundText != null) roundText.Position = statisticsBox.Position + new Vector2f(statisticsBox.GetGlobalBounds().Width / 2 - roundText.GetGlobalBounds().Width / 2, 5);
-            if (scoreText != null) scoreText.Position = statisticsBox.Position + new Vector2f(statisticsBox.GetGlobalBounds().Width / 2 - scoreText.GetGlobalBounds().Width / 2, 30);
+            if (roundText != null)
+            {
+                roundText.Position = statisticsBox.Position + new Vector2f(statisticsBox.GetGlobalBounds().Width / 2 - roundText.GetGlobalBounds().Width / 2, 5);
+            }
+
+            if (scoreText != null)
+            {
+                scoreText.Position = statisticsBox.Position + new Vector2f(statisticsBox.GetGlobalBounds().Width / 2 - scoreText.GetGlobalBounds().Width / 2, 30);
+            }
 
             for (int i = 0; i < playerStatistics.Count; ++i)
             {
@@ -87,8 +94,15 @@ namespace SnakeGame.Core.Statistic
         public void Render(RenderTarget target, RenderStates states)
         {
             target.Draw(statisticsBox, states);
-            if (roundText != null) target.Draw(roundText, states);
-            if (scoreText != null) target.Draw(scoreText, states);
+            if (roundText != null) 
+            {
+                target.Draw(roundText, states);
+            }
+            if (scoreText != null)
+            {
+                target.Draw(scoreText, states);
+            }
+
             playerStatistics.ForEach(playerStatistic => playerStatistic.Render(target, states));
         }
     }

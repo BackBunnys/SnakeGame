@@ -7,13 +7,13 @@ using System;
 
 namespace SnakeGame.Screen
 {
-    class CountDownScene : OverlayScreen
+    class CountDownScreen : OverlayScreen
     {
         private Text countDownText;
         private readonly int durationInSeconds = 3;
         private Clock clock;
 
-        public CountDownScene(GameEngine engine) : base(engine)
+        public CountDownScreen(GameEngine engine) : base(engine)
         {
         }
 
@@ -32,6 +32,7 @@ namespace SnakeGame.Screen
 
         public override void ProcessEvent(Event ev)
         {
+            //Ignores input
         }
 
         public override void Render(RenderTarget target, RenderStates states)
@@ -43,7 +44,11 @@ namespace SnakeGame.Screen
         public override void Update(float dt)
         {
             var elapsedSeconds = clock.ElapsedTime.AsSeconds();
-            if (elapsedSeconds >= durationInSeconds) engine.GetMachine().PopState();
+            if (elapsedSeconds >= durationInSeconds)
+            {
+                engine.GetMachine().PopState();
+            }
+
             countDownText.DisplayedString = Math.Ceiling((durationInSeconds - elapsedSeconds)).ToString();
             countDownText.Position = new Vector2f(engine.GetWindow().Size.X / 2 - countDownText.GetLocalBounds().Width / 2, engine.GetWindow().Size.Y / 2 - countDownText.GetLocalBounds().Height / 2);
         }

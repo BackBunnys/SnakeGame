@@ -11,7 +11,7 @@ namespace SnakeGame
     class Application
     {
         private readonly GameEngine engine;
-        RenderStates states;
+        private readonly RenderStates states;
         private readonly Sprite background;
 
         void OnClose(object sender, EventArgs e)
@@ -74,18 +74,20 @@ namespace SnakeGame
 
         private void BindEvents()
         {
-            engine.GetWindow().Closed += new EventHandler(OnClose);
-            engine.GetWindow().KeyPressed += new EventHandler<KeyEventArgs>(OnKeyPressed);
-            engine.GetWindow().KeyReleased += new EventHandler<KeyEventArgs>(OnKeyReleased);
-            engine.GetWindow().MouseButtonReleased += new EventHandler<MouseButtonEventArgs>(OnMouseButtonReleased);
-            engine.GetWindow().MouseMoved += new EventHandler<MouseMoveEventArgs>(OnMouseMove);
+            engine.GetWindow().Closed += OnClose;
+            engine.GetWindow().KeyPressed += OnKeyPressed;
+            engine.GetWindow().KeyReleased += OnKeyReleased;
+            engine.GetWindow().MouseButtonReleased += OnMouseButtonReleased;
+            engine.GetWindow().MouseMoved += OnMouseMove;
         }
 
         private void Update(float dt)
         {
             engine.GetWindow().DispatchEvents();
             if (!engine.GetMachine().IsEmpty())
+            {
                 engine.GetMachine().GetCurrentState().Update(dt);
+            }
         }
 
         private void Render()

@@ -27,7 +27,11 @@ namespace SnakeGame.Core.Controller
         public void Update()
         {
             Snake.Movement = MoveSpeed.SLOW;
-            if (Target == null) return;
+            if (Target == null)
+            {
+                return;
+            }
+
             UpdateSnakeMovement();
             UpdateSnakeDirection();
         }
@@ -55,10 +59,22 @@ namespace SnakeGame.Core.Controller
         {
             MoveDirection newDirection = Snake.Direction;
 
-            if (Target.X > Snake.Position.X) newDirection = MoveDirection.RIGHT;
-            else if (Target.X < Snake.Position.X) newDirection = MoveDirection.LEFT;
-            else if (Target.Y > Snake.Position.Y) newDirection = MoveDirection.DOWN;
-            else if (Target.Y < Snake.Position.Y) newDirection = MoveDirection.UP;
+            if (Target.X > Snake.Position.X)
+            {
+                newDirection = MoveDirection.RIGHT;
+            }
+            else if (Target.X < Snake.Position.X)
+            {
+                newDirection = MoveDirection.LEFT;
+            }
+            else if (Target.Y > Snake.Position.Y)
+            {
+                newDirection = MoveDirection.DOWN;
+            }
+            else if (Target.Y < Snake.Position.Y)
+            {
+                newDirection = MoveDirection.UP;
+            }
 
             if (newDirection.IsOpposite(Snake.Direction))
             {
@@ -70,7 +86,10 @@ namespace SnakeGame.Core.Controller
             {
                 foreach (MoveDirection direction in Enum.GetValues(typeof(MoveDirection)))
                 {
-                    if (direction.IsOpposite(Snake.Direction)) continue;
+                    if (direction.IsOpposite(Snake.Direction))
+                    {
+                        continue;
+                    }
 
                     if (!WillCollideBlocks(direction))
                     {

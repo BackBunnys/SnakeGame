@@ -1,4 +1,5 @@
 ﻿using SFML.System;
+using System;
 
 namespace SnakeGame.Core
 {
@@ -31,11 +32,24 @@ namespace SnakeGame.Core
 
         public static MoveDirection FromVector(Vector2f vector)
         {
-            if (vector == new Vector2f(0, -1)) return MoveDirection.UP;
-            if (vector == new Vector2f(0, 1)) return MoveDirection.DOWN;
-            if (vector == new Vector2f(-1, 0)) return MoveDirection.LEFT;
-            if (vector == new Vector2f(1, 0)) return MoveDirection.RIGHT;
-            else throw new System.Exception("Incorrect direction vector");
+            if (vector == new Vector2f(0, -1))
+            {
+                return MoveDirection.UP;
+            }
+            if (vector == new Vector2f(0, 1))
+            {
+                return MoveDirection.DOWN;
+            }
+            if (vector == new Vector2f(-1, 0))
+            {
+                return MoveDirection.LEFT;
+            }
+            if (vector == new Vector2f(1, 0))
+            {
+                return MoveDirection.RIGHT;
+            }
+
+            throw new ArgumentException();
         }
     }
 }

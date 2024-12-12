@@ -110,9 +110,14 @@ namespace SnakeGame.Screen
                             }
 
                             if (!(players[i] is BotPlayer)) //first are not bot
+                            {
                                 players[i].Snake.Dead = true;
+                            }
+
                             if (!(player is BotPlayer)) //second are not bot
+                            {
                                 player.Snake.Dead = true;
+                            }
                         }
                     }
                 }   
@@ -176,12 +181,11 @@ namespace SnakeGame.Screen
             setup.Players.ForEach(playerSetup =>
                 {
                     Snake snake = CreateSnake();
-                    if (playerSetup is HumanPlayerSetup)
+                    if (playerSetup is HumanPlayerSetup humanSetup)
                     {
-                        HumanPlayerSetup humanSetup = playerSetup as HumanPlayerSetup;
                         players.Add(new HumanPlayer(snake, new SnakeKeyboardController(humanSetup.Bindings, snake)) { Name = playerSetup.Name, Color = playerSetup.Color });
                     }
-                    if (playerSetup is BotPlayerSetup)
+                    if (playerSetup is BotPlayerSetup botSetup)
                     {
                         players.Add(new BotPlayer(snake, new SnakeBotController(snake, blocks) { Target = fruit, Strength = setup.Difficulty.GetBotDifficulty() }) { Name = playerSetup.Name, Color = playerSetup.Color });
                     }
@@ -213,7 +217,7 @@ namespace SnakeGame.Screen
             roundNumber++;
             statistics.Round = roundNumber;
             Update(0);
-            engine.GetMachine().PushState(new CountDownScene(engine));
+            engine.GetMachine().PushState(new CountDownScreen(engine));
         }
 
         private void RespawnBlock()
@@ -242,7 +246,11 @@ namespace SnakeGame.Screen
 
         public override void ProcessEvent(Event ev)
         {
-            if (ev.Type == EventType.KeyPressed && ev.Key.Code == Keyboard.Key.Escape) engine.GetMachine().PushState(new PauseScreen(engine, setup));
+            if (ev.Type == EventType.KeyPressed && ev.Key.Code == Keyboard.Key.Escape)
+            {
+                engine.GetMachine().PushState(new PauseScreen(engine, setup));
+            }
+
             players.ForEach(player => player.ProcessEvent(ev));
         }
 
@@ -284,7 +292,10 @@ namespace SnakeGame.Screen
 
         private bool IsGameOver()
         {
-            if (setup.RoundCount == null) return false;
+            if (setup.RoundCount == null)
+            {
+                return false;
+            }
 
             List<uint> scores = players.Select(player => player.Score).ToList();
             uint maxScore = scores.Max();

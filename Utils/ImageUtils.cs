@@ -2,7 +2,7 @@
 
 namespace SnakeGame.Utils
 {
-    class ImageUtils
+    static class ImageUtils
     {
         public static byte[] BitmapToByteArray(System.Drawing.Bitmap bitmap)
         {

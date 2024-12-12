@@ -90,7 +90,7 @@ namespace SnakeGame.Screen
 
         public override void ProcessEvent(Event ev)
         {
-            
+            //Do not handles events
         }
 
         public override void Update(float dt)

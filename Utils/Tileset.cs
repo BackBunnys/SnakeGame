@@ -11,7 +11,9 @@ namespace SnakeGame.Utils
         readonly Sprite[,] spriteMap;
         List<string> bindings;
 
-        public Tileset(Texture texture, int tilesize = 64)
+        public Tileset(Texture texture) : this(texture, 64) { }
+
+        public Tileset(Texture texture, int tilesize)
         {
             Sprite[,] sprites = new Sprite[texture.Size.Y / tilesize, texture.Size.X / tilesize];
             Vector2i tileSize = new Vector2i(tilesize, tilesize);
@@ -24,7 +26,6 @@ namespace SnakeGame.Utils
                     sprites[i, j] = tileSprite;
                 }
             }
-
             spriteMap = sprites;
         }
 

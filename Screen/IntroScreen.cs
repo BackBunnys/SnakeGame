@@ -45,13 +45,36 @@ namespace SnakeGame.Screen
         {
             if (ev.Type == EventType.KeyPressed)
             {
-                if (ev.Key.Code == Keyboard.Key.S) gameSetup.Players = new List<PlayerSetup>() { HumanPlayerSetup.PLAYER_ONE };
-                if (ev.Key.Code == Keyboard.Key.M) gameSetup.Players = new List<PlayerSetup>() { HumanPlayerSetup.PLAYER_ONE, HumanPlayerSetup.PLAYER_TWO };
-                if (ev.Key.Code == Keyboard.Key.B) gameSetup.Players = new List<PlayerSetup>() { HumanPlayerSetup.PLAYER_ONE, BotPlayerSetup.BOT_SETUP };
-                if ((uint) ev.Key.Code >= (uint) Keyboard.Key.Num0 && (uint) ev.Key.Code <= (uint) Keyboard.Key.Num9) roundCountInput += ev.Key.Code.ToString().Replace("Num", "");
-                if (ev.Key.Code == Keyboard.Key.E) gameSetup.Difficulty = GameDifficulty.EASY;
-                if (ev.Key.Code == Keyboard.Key.N) gameSetup.Difficulty = GameDifficulty.NORMAL;
-                if (ev.Key.Code == Keyboard.Key.H) gameSetup.Difficulty = GameDifficulty.HARD;
+                if ((uint)ev.Key.Code >= (uint)Keyboard.Key.Num0 && (uint)ev.Key.Code <= (uint)Keyboard.Key.Num9)
+                {
+                    roundCountInput += ev.Key.Code.ToString().Replace("Num", "");
+                }
+                else
+                {
+                    switch (ev.Key.Code)
+                    {
+                        case Keyboard.Key.S:
+                            gameSetup.Players = new List<PlayerSetup>() { HumanPlayerSetup.PLAYER_ONE };
+                            break;
+                        case Keyboard.Key.M:
+                            gameSetup.Players = new List<PlayerSetup>() { HumanPlayerSetup.PLAYER_ONE, HumanPlayerSetup.PLAYER_TWO };
+                            break;
+                        case Keyboard.Key.B:
+                            gameSetup.Players = new List<PlayerSetup>() { HumanPlayerSetup.PLAYER_ONE, BotPlayerSetup.BOT_SETUP };
+                            break;
+                        case Keyboard.Key.E:
+                            gameSetup.Difficulty = GameDifficulty.EASY;
+                            break;
+                        case Keyboard.Key.N:
+                            gameSetup.Difficulty = GameDifficulty.NORMAL;
+                            break;
+                        case Keyboard.Key.H:
+                            gameSetup.Difficulty = GameDifficulty.HARD;
+                            break;
+                        default:
+                            break;
+                    }
+                }
             }
         }
 
@@ -80,7 +103,10 @@ namespace SnakeGame.Screen
 
         private void PrepareGameSetup()
         {
-            if (roundCountInput.Length == 0) return;
+            if (roundCountInput.Length == 0)
+            {
+                return;
+            }
 
             if (uint.TryParse(roundCountInput, out uint roundCount))
             {
