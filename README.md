@@ -1,0 +1,2 @@
+# SnakeGame
+[![Codacy Badge](https://api.codacy.com/project/badge/Grade/120035aaa825470aaf14a4166ab74e17)](https://app.codacy.com/gh/BackBunnys/SnakeGame?utm_source=github.com&utm_medium=referral&utm_content=BackBunnys/SnakeGame&utm_campaign=Badge_Grade)
