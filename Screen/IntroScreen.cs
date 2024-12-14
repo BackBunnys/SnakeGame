@@ -98,7 +98,7 @@ namespace SnakeGame.Screen
         private void StartGame()
         {
             PrepareGameSetup();
-            engine.GetMachine().ReplaceState(new GameScreen(engine, gameSetup));
+            engine.GetMachine().ReplaceState(new MenuScreen(engine, gameSetup));
         }
 
         private void PrepareGameSetup()
