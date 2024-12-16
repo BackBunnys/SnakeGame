@@ -1,5 +1,7 @@
 ﻿using SFML.Graphics;
+using SFML.Window;
 using System;
+using System.Collections.Generic;
 
 namespace SnakeGame.GUI
 {
@@ -14,6 +16,9 @@ namespace SnakeGame.GUI
         public static GUIFactory Instance => _instance;
         public abstract Text Text(string content);
         public abstract Button Button(string text, Action onClick);
-        public abstract Container Container();
+        public abstract LayoutContainer Container();
+        public abstract Input Input(ValueBinding<string> binding);
+        public abstract ColorPalette ColorPalette(List<Color> colors, ValueBinding<Color> binding);
+        public abstract BindingButton BindingButton(ValueBinding<Keyboard.Key> binding);
     }
 }

@@ -8,7 +8,7 @@ namespace SnakeGame.Screen
 {
     class MenuScreen : IState
     {
-        Container guiContainer;
+        LayoutContainer guiContainer;
         GameSetup setup;
 
         public MenuScreen(GameEngine engine, GameSetup setup) : base(engine)

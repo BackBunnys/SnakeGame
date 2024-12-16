@@ -59,6 +59,15 @@ namespace SnakeGame
             ev.MouseMove.Y = e.Y;
             engine.GetMachine().GetCurrentState().ProcessEvent(ev);
         }
+        void OnTextEntered(object sender, TextEventArgs e)
+        {
+            Event ev = new Event
+            {
+                Type = EventType.TextEntered
+            };
+            ev.Text.Unicode = e.Unicode[0];
+            engine.GetMachine().GetCurrentState().ProcessEvent(ev);
+        }
 
         public Application(VideoMode videoMode)
         {
@@ -83,6 +92,7 @@ namespace SnakeGame
             engine.GetWindow().KeyReleased += OnKeyReleased;
             engine.GetWindow().MouseButtonReleased += OnMouseButtonReleased;
             engine.GetWindow().MouseMoved += OnMouseMove;
+            engine.GetWindow().TextEntered += OnTextEntered;
         }
 
         private void SetupGUI()

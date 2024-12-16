@@ -13,7 +13,7 @@ namespace SnakeGame.Screen
     {
         Text applicationName;
         Text applicationVersion;
-        readonly int introDurationInSeconds = 3;
+        readonly int introDurationInSeconds = 0;
         Clock clock;
         readonly GameSetup gameSetup = new GameSetup();
         string roundCountInput = "";
@@ -45,7 +45,7 @@ namespace SnakeGame.Screen
         {
             if (ev.Type == EventType.KeyPressed)
             {
-                if ((uint)ev.Key.Code >= (uint)Keyboard.Key.Num0 && (uint)ev.Key.Code <= (uint)Keyboard.Key.Num9)
+                if ((uint) ev.Key.Code >= (uint) Keyboard.Key.Num0 && (uint) ev.Key.Code <= (uint) Keyboard.Key.Num9)
                 {
                     roundCountInput += ev.Key.Code.ToString().Replace("Num", "");
                 }
@@ -98,7 +98,7 @@ namespace SnakeGame.Screen
         private void StartGame()
         {
             PrepareGameSetup();
-            engine.GetMachine().ReplaceState(new MenuScreen(engine, gameSetup));
+            engine.GetMachine().ReplaceState(new SettingsScreen(engine, gameSetup));
         }
 
         private void PrepareGameSetup()
