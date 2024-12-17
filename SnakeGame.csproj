@@ -98,10 +98,16 @@
     <ManifestKeyFile>SnakeGame_TemporaryKey.pfx</ManifestKeyFile>
   </PropertyGroup>
   <PropertyGroup>
-    <GenerateManifests>true</GenerateManifests>
+    <GenerateManifests>false</GenerateManifests>
   </PropertyGroup>
   <PropertyGroup>
-    <SignManifests>true</SignManifests>
+    <SignManifests>false</SignManifests>
+  </PropertyGroup>
+  <PropertyGroup>
+    <TargetZone>LocalIntranet</TargetZone>
+  </PropertyGroup>
+  <PropertyGroup>
+    <ApplicationManifest>Properties\app.manifest</ApplicationManifest>
   </PropertyGroup>
   <ItemGroup>
     <None Include="App.config" />
@@ -114,6 +120,7 @@
     <Compile Include="Core\Controller\SnakeKeyboardController.cs" />
     <Compile Include="Core\Fruit.cs" />
     <Compile Include="Core\IComponent.cs" />
+    <Compile Include="Core\IInteractableComponent.cs" />
     <Compile Include="Core\MoveDirection.cs" />
     <Compile Include="Core\MoveSpeed.cs" />
     <Compile Include="Core\Player\BotPlayer.cs" />
@@ -124,6 +131,24 @@
     <Compile Include="Core\Tileset\SnakeTileset.cs" />
     <Compile Include="Core\Statistic\Statistics.cs" />
     <Compile Include="Engine\GameEngine.cs" />
+    <Compile Include="GUI\BindingButton.cs" />
+    <Compile Include="GUI\BitGUIFactory.cs" />
+    <Compile Include="GUI\Button.cs" />
+    <Compile Include="GUI\ColorPalette.cs" />
+    <Compile Include="GUI\Container.cs" />
+    <Compile Include="GUI\Input.cs" />
+    <Compile Include="GUI\LayoutContainer.cs" />
+    <Compile Include="GUI\GUIBuilder.cs" />
+    <Compile Include="GUI\GUIFactory.cs" />
+    <Compile Include="GUI\IGUIComponent.cs" />
+    <Compile Include="GUI\Segmented.cs" />
+    <Compile Include="GUI\Text.cs" />
+    <Compile Include="GUI\ValueBinding.cs" />
+    <Compile Include="Properties\Settings.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTimeSharedInput>True</DesignTimeSharedInput>
+      <DependentUpon>Settings.settings</DependentUpon>
+    </Compile>
     <Compile Include="Screen\CountDownScreen.cs" />
     <Compile Include="Screen\GameOverScreen.cs" />
     <Compile Include="Engine\IState.cs" />
@@ -137,10 +162,17 @@
     <Compile Include="Screen\GameScreen.cs" />
     <Compile Include="Screen\GameSetup.cs" />
     <Compile Include="Screen\IntroScreen.cs" />
+    <Compile Include="Screen\MenuScreen.cs" />
     <Compile Include="Screen\OverlayScreen.cs" />
     <Compile Include="Screen\PauseScreen.cs" />
     <Compile Include="Core\Snake.cs" />
     <Compile Include="Screen\RoundOverScreen.cs" />
+    <Compile Include="Screen\SetupScreen.cs" />
+    <Compile Include="Settings\AppConfigSettingsManager.cs" />
+    <Compile Include="Settings\PlayerSettings.cs" />
+    <Compile Include="Settings\Settings.cs" />
+    <Compile Include="Screen\SettingsScreen.cs" />
+    <Compile Include="Settings\ISettingsManager.cs" />
     <Compile Include="Utils\GameSetupExtensions.cs" />
     <Compile Include="Utils\ImageUtils.cs" />
     <Compile Include="Utils\Resources.cs" />
@@ -161,8 +193,21 @@
       <HintPath>packages\SFML.Window.2.6.0\lib\netstandard2.0\SFML.Window.dll</HintPath>
     </Reference>
     <Reference Include="System" />
+    <Reference Include="System.Buffers, Version=4.0.3.0, Culture=neutral, PublicKeyToken=cc7b13ffcd2ddd51, processorArchitecture=MSIL">
+      <HintPath>packages\System.Buffers.4.5.1\lib\net461\System.Buffers.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Configuration" />
+    <Reference Include="System.Data" />
     <Reference Include="System.Drawing" />
     <Reference Include="System.Numerics" />
+    <Reference Include="System.Numerics.Vectors, Version=4.1.4.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
+      <HintPath>packages\System.Numerics.Vectors.4.5.0\lib\net46\System.Numerics.Vectors.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Runtime.CompilerServices.Unsafe, Version=6.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
+      <HintPath>packages\System.Runtime.CompilerServices.Unsafe.6.0.0\lib\net461\System.Runtime.CompilerServices.Unsafe.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Windows.Forms" />
+    <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="Resource.resx">
@@ -173,10 +218,19 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />
-    <None Include="Resources\arial.ttf" />
+    <None Include="Properties\app.manifest" />
+    <None Include="Properties\Settings.settings">
+      <Generator>SettingsSingleFileGenerator</Generator>
+      <LastGenOutput>Settings.Designer.cs</LastGenOutput>
+    </None>
+    <Resource Include="Resources\arial.ttf">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Resource>
   </ItemGroup>
   <ItemGroup>
-    <None Include="Resources\PressStart2P-Regular.ttf" />
+    <None Include="Resources\PressStart2P-Regular.ttf">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
     <None Include="Resources\simple_background.png" />
     <None Include="Resources\snake-tileset.png" />
   </ItemGroup>

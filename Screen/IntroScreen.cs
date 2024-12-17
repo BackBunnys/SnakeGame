@@ -45,7 +45,7 @@ namespace SnakeGame.Screen
         {
             if (ev.Type == EventType.KeyPressed)
             {
-                if ((uint)ev.Key.Code >= (uint)Keyboard.Key.Num0 && (uint)ev.Key.Code <= (uint)Keyboard.Key.Num9)
+                if ((uint) ev.Key.Code >= (uint) Keyboard.Key.Num0 && (uint) ev.Key.Code <= (uint) Keyboard.Key.Num9)
                 {
                     roundCountInput += ev.Key.Code.ToString().Replace("Num", "");
                 }
@@ -98,7 +98,7 @@ namespace SnakeGame.Screen
         private void StartGame()
         {
             PrepareGameSetup();
-            engine.GetMachine().ReplaceState(new GameScreen(engine, gameSetup));
+            engine.GetMachine().ReplaceState(new MenuScreen(engine));
         }
 
         private void PrepareGameSetup()
