@@ -104,6 +104,7 @@ namespace SnakeGame.Screen
                 if (exitText.GetGlobalBounds().Inflate(new Vector2f(50, 50)).Contains(ev.MouseButton.X, ev.MouseButton.Y))
                 {
                     engine.GetMachine().Clear();
+                    engine.GetMachine().PushState(new MenuScreen(engine));
                 }
             }
             if (ev.Type == EventType.MouseMoved)

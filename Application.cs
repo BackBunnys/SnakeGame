@@ -5,6 +5,7 @@ using SnakeGame.Engine;
 using System;
 using SnakeGame.Utils;
 using SFML.System;
+using SnakeGame.GUI;
 
 namespace SnakeGame
 {
@@ -58,9 +59,20 @@ namespace SnakeGame
             ev.MouseMove.Y = e.Y;
             engine.GetMachine().GetCurrentState().ProcessEvent(ev);
         }
+        void OnTextEntered(object sender, TextEventArgs e)
+        {
+            Event ev = new Event
+            {
+                Type = EventType.TextEntered
+            };
+            ev.Text.Unicode = e.Unicode[0];
+            engine.GetMachine().GetCurrentState().ProcessEvent(ev);
+        }
 
         public Application(VideoMode videoMode)
         {
+            SetupGUI();
+
             engine = new GameEngine(videoMode);
             engine.GetMachine().PushState(new IntroScreen(engine));
 
@@ -69,6 +81,7 @@ namespace SnakeGame
             background = new Sprite(Resources.background);
             background.Scale = new Vector2f(videoMode.Width / background.GetLocalBounds().Width, videoMode.Height / background.GetLocalBounds().Height);
             states = RenderStates.Default;
+
             BindEvents();
         }
 
@@ -79,6 +92,12 @@ namespace SnakeGame
             engine.GetWindow().KeyReleased += OnKeyReleased;
             engine.GetWindow().MouseButtonReleased += OnMouseButtonReleased;
             engine.GetWindow().MouseMoved += OnMouseMove;
+            engine.GetWindow().TextEntered += OnTextEntered;
+        }
+
+        private void SetupGUI()
+        {
+            GUIFactory.Init(new BitGUIFactory());
         }
 
         private void Update(float dt)
