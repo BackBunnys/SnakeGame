@@ -17,7 +17,7 @@ namespace SnakeGame.GUI
 
         public event Action OnClick;
 
-        private Text Text { get; set; }
+        public Text Text { get; set; }
 
 
         public Button(Text text)

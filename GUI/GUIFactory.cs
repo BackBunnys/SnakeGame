@@ -1,4 +1,5 @@
 ﻿using SFML.Graphics;
+using SFML.System;
 using SFML.Window;
 using System;
 using System.Collections.Generic;
@@ -20,5 +21,6 @@ namespace SnakeGame.GUI
         public abstract Input Input(ValueBinding<string> binding);
         public abstract ColorPalette ColorPalette(List<Color> colors, ValueBinding<Color> binding);
         public abstract BindingButton BindingButton(ValueBinding<Keyboard.Key> binding);
+        public abstract Segmented Segmented(Vector2f size, List<Button> options, int selectedIndex);
     }
 }

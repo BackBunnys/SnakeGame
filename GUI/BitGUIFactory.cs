@@ -1,4 +1,5 @@
 ﻿using SFML.Graphics;
+using SFML.System;
 using SFML.Window;
 using SnakeGame.Utils;
 using System;
@@ -57,6 +58,11 @@ namespace SnakeGame.GUI
             {
                 Size = new SFML.System.Vector2f(50, 50)
             };
+        }
+
+        public override Segmented Segmented(Vector2f size, List<Button> options, int selectedIndex)
+        {
+            return new Segmented(size, options, selectedIndex);
         }
     }
 }

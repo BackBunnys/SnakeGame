@@ -9,11 +9,9 @@ namespace SnakeGame.Screen
     class MenuScreen : IState
     {
         LayoutContainer guiContainer;
-        GameSetup setup;
 
-        public MenuScreen(GameEngine engine, GameSetup setup) : base(engine)
+        public MenuScreen(GameEngine engine) : base(engine)
         {
-            this.setup = setup;
         }
 
         public override void Init()
@@ -30,8 +28,8 @@ namespace SnakeGame.Screen
 
             var buttonsContainer = gui.Container();
             buttonsContainer.Size = new Vector2f(engine.GetWindow().Size.X, engine.GetWindow().Size.Y / 2);
-            buttonsContainer.Components.Add(gui.Button("Start", () => engine.GetMachine().PushState(new GameScreen(engine, setup))));
-            buttonsContainer.Components.Add(gui.Button("Settings", () => engine.GetMachine().PushState(new SettingsScreen(engine, setup))));
+            buttonsContainer.Components.Add(gui.Button("Start", () => engine.GetMachine().PushState(new SetupScreen(engine))));
+            buttonsContainer.Components.Add(gui.Button("Settings", () => engine.GetMachine().PushState(new SettingsScreen(engine))));
             buttonsContainer.Components.Add(gui.Button("Exit", () => engine.GetMachine().Clear()));
 
             guiContainer.Components.Add(buttonsContainer);

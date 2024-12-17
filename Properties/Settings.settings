@@ -36,7 +36,10 @@
       <Value Profile="(Default)">Right</Value>
     </Setting>
     <Setting Name="player2_color" Type="System.Drawing.Color" Scope="User">
-      <Value Profile="(Default)">255, 128, 0</Value>
+      <Value Profile="(Default)">Red</Value>
+    </Setting>
+    <Setting Name="difficulty" Type="System.String" Scope="User">
+      <Value Profile="(Default)">NORMAL</Value>
     </Setting>
   </Settings>
 </SettingsFile>

@@ -13,7 +13,7 @@ namespace SnakeGame.Screen
     {
         Text applicationName;
         Text applicationVersion;
-        readonly int introDurationInSeconds = 0;
+        readonly int introDurationInSeconds = 3;
         Clock clock;
         readonly GameSetup gameSetup = new GameSetup();
         string roundCountInput = "";
@@ -98,7 +98,7 @@ namespace SnakeGame.Screen
         private void StartGame()
         {
             PrepareGameSetup();
-            engine.GetMachine().ReplaceState(new SettingsScreen(engine, gameSetup));
+            engine.GetMachine().ReplaceState(new MenuScreen(engine));
         }
 
         private void PrepareGameSetup()

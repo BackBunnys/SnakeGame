@@ -2,9 +2,10 @@
 using SFML.System;
 using SFML.Window;
 using SnakeGame.Core;
-using SnakeGame.Core.Player;
 using SnakeGame.Engine;
 using SnakeGame.GUI;
+using SnakeGame.Settings;
+using System;
 using System.Collections.Generic;
 using static SnakeGame.Screen.GameSetup;
 
@@ -13,12 +14,13 @@ namespace SnakeGame.Screen
     class SettingsScreen : IState
     {
         private IGUIComponent guiContainer;
-        private readonly GameSetup setup;
-        Keyboard.Key key;
+        private readonly ISettingsManager manager;
+        private readonly Settings.Settings settings;
 
-        public SettingsScreen(GameEngine engine, GameSetup setup) : base(engine)
+        public SettingsScreen(GameEngine engine) : base(engine)
         {
-            this.setup = setup;
+            manager = new AppConfigSettingsManager();
+            settings = manager.Get();
         }
 
         public override void Init()
@@ -34,57 +36,74 @@ namespace SnakeGame.Screen
             guiContainer = guiBuilder
                 .Column(new Vector2f(engine.GetWindow().Size.X, engine.GetWindow().Size.Y - yOffset * 2))
                     .Component(gui.Text("Settings"))
-                    .Row(new Vector2f(engine.GetWindow().Size.X, engine.GetWindow().Size.Y - yOffset * 2 - 200))
-                        .Column(size => new Vector2f(size.X / 2, size.Y / 2 + 50))
+                    .Row(new Vector2f(engine.GetWindow().Size.X, engine.GetWindow().Size.Y - yOffset * 2 - 150))
+                        .Column(size => new Vector2f(size.X / 2, size.Y / 2 + 125))
                             .Component(gui.Text("Player 1"))
                             .Row(size => new Vector2f(size.X - 50, 40), LayoutContainer.AlignType.START)
                                 .Component(gui.Text("Name"))
-                                .Component(gui.Input(new ValueBinding<string>(() => setup.Players[0].Name, content => setup.Players[0].Name = content)))
+                                .Component(gui.Input(new ValueBinding<string>(() => settings.Player1.Name, content => settings.Player1.Name = content)))
                             .Close()
                             .Row(size => new Vector2f(size.X - 50, 40), LayoutContainer.AlignType.START)
                                 .Component(gui.Text("Color"))
-                                .Component(SetupColorPalette(gui.ColorPalette(availableColors, new ValueBinding<Color>(() => setup.Players[0].Color, color => setup.Players[0].Color = color))))
+                                .Component(SetupColorPalette(gui.ColorPalette(availableColors, new ValueBinding<Color>(() => settings.Player1.Color, color => settings.Player1.Color = color))))
                             .Close()
                             .Row(size => new Vector2f(size.X - 50, 40), LayoutContainer.AlignType.START)
                                 .Component(gui.Text("Controls"))
-                                .Component(gui.Text("Preset"))
+                                .Row(new Vector2f(150, 30))
+                                    .Component(SetupPresetButton(gui.Button("WASD", () => ApplyWASDPreset(settings.Player1))))
+                                    .Component(SetupPresetButton(gui.Button("Arrows", () => ApplyArrowsPreset(settings.Player1))))
+                                .Close()
+                            .Close()
+                            .Row(size => new Vector2f(50, 50))
+                                .Component(gui.BindingButton(new ValueBinding<Keyboard.Key>(() => settings.Player1.Bindings[MoveDirection.UP], key => settings.Player1.Bindings[MoveDirection.UP] = key)))
+                            .Close()
+                            .Row(size => new Vector2f(180, 50))
+                                .Component(gui.BindingButton(new ValueBinding<Keyboard.Key>(() => settings.Player1.Bindings[MoveDirection.LEFT], key => settings.Player1.Bindings[MoveDirection.LEFT] = key)))
+                                .Component(gui.BindingButton(new ValueBinding<Keyboard.Key>(() => settings.Player1.Bindings[MoveDirection.DOWN], key => settings.Player1.Bindings[MoveDirection.DOWN] = key)))
+                                .Component(gui.BindingButton(new ValueBinding<Keyboard.Key>(() => settings.Player1.Bindings[MoveDirection.RIGHT], key => settings.Player1.Bindings[MoveDirection.RIGHT] = key)))
                             .Close()
                         .Close()
                         .Column(size => new Vector2f(size.X / 2, size.Y / 2 + 125))
                             .Component(gui.Text("Player 2"))
                             .Row(size => new Vector2f(size.X - 50, 40), LayoutContainer.AlignType.START)
                                 .Component(gui.Text("Name"))
-                                .Component(gui.Input(new ValueBinding<string>(() => "Player 2", content => { })))
+                                .Component(gui.Input(new ValueBinding<string>(() => settings.Player2.Name, content => settings.Player2.Name = content)))
                             .Close()
                             .Row(size => new Vector2f(size.X - 50, 40), LayoutContainer.AlignType.START)
                                 .Component(gui.Text("Color"))
-                                .Component(gui.Text("Yellow"))
+                                .Component(SetupColorPalette(gui.ColorPalette(availableColors, new ValueBinding<Color>(() => settings.Player2.Color, color => settings.Player2.Color = color))))
                             .Close()
                             .Row(size => new Vector2f(size.X - 50, 40), LayoutContainer.AlignType.START)
                                 .Component(gui.Text("Controls"))
-                                .Component(gui.Text("Preset"))
+                                .Row(new Vector2f(150, 30))
+                                    .Component(SetupPresetButton(gui.Button("WASD", () => ApplyWASDPreset(settings.Player2))))
+                                    .Component(SetupPresetButton(gui.Button("Arrows", () => ApplyArrowsPreset(settings.Player2))))
+                                .Close()
                             .Close()
                             .Row(size => new Vector2f(50, 50))
-                                .Component(gui.BindingButton(new ValueBinding<Keyboard.Key>(() => key, key => this.key = key)))
+                                .Component(gui.BindingButton(new ValueBinding<Keyboard.Key>(() => settings.Player2.Bindings[MoveDirection.UP], key => settings.Player2.Bindings[MoveDirection.UP] = key)))
                             .Close()
                             .Row(size => new Vector2f(180, 50))
-                                .Component(gui.BindingButton(new ValueBinding<Keyboard.Key>(() => key, key => this.key = key)))
-                                .Component(gui.BindingButton(new ValueBinding<Keyboard.Key>(() => key, key => this.key = key)))
-                                .Component(gui.BindingButton(new ValueBinding<Keyboard.Key>(() => key, key => this.key = key)))
+                                .Component(gui.BindingButton(new ValueBinding<Keyboard.Key>(() => settings.Player2.Bindings[MoveDirection.LEFT], key => settings.Player2.Bindings[MoveDirection.LEFT] = key)))
+                                .Component(gui.BindingButton(new ValueBinding<Keyboard.Key>(() => settings.Player2.Bindings[MoveDirection.DOWN], key => settings.Player2.Bindings[MoveDirection.DOWN] = key)))
+                                .Component(gui.BindingButton(new ValueBinding<Keyboard.Key>(() => settings.Player2.Bindings[MoveDirection.RIGHT], key => settings.Player2.Bindings[MoveDirection.RIGHT] = key)))
                             .Close()
                         .Close()
                     .Close()
-                    .Column(new Vector2f(engine.GetWindow().Size.X - 50, 75))
+                    .Column(new Vector2f(engine.GetWindow().Size.X - 50, 60))
                         .Component(gui.Text("Difficulty"))
                         .Row(size => new Vector2f(size.X, 25))
-                            .Component(gui.Button("EASY", () => setup.Difficulty = GameDifficulty.EASY))
-                            .Component(gui.Button("NORMAL", () => setup.Difficulty = GameDifficulty.NORMAL))
-                            .Component(gui.Button("HARD", () => setup.Difficulty = GameDifficulty.HARD))
+                            .Component(gui.Segmented(new Vector2f(engine.GetWindow().Size.X - 50, 25), new List<Button>()
+                            {
+                                gui.Button("EASY", () => settings.Difficulty = GameDifficulty.EASY),
+                                gui.Button("NORMAL", () => settings.Difficulty = GameDifficulty.NORMAL),
+                                gui.Button("HARD", () => settings.Difficulty = GameDifficulty.HARD)
+                            }, settings.Difficulty == GameDifficulty.EASY ? 0 : settings.Difficulty == GameDifficulty.NORMAL ? 1 : 2))
                         .Close()
                     .Close()
                     .Row(new Vector2f(engine.GetWindow().Size.X - 50, 75), LayoutContainer.AlignType.END)
                         .Component(gui.Button("Back to menu", () => engine.GetMachine().PopState()))
-                        .Component(gui.Button("Save", () => { }))
+                        .Component(gui.Button("Save", () => manager.Save(settings)))
                     .Close()
                 .Close()
             .Build();
@@ -98,6 +117,29 @@ namespace SnakeGame.Screen
             colorPalette.ColorTileMargin = 10;
             colorPalette.ColorTileSize = new Vector2f(25, 25);
             return colorPalette;
+        }
+
+        private Button SetupPresetButton(Button button)
+        {
+            button.Text.CharacterSize = 13;
+            button.HoverPadding = new Vector2f(5, 5);
+            return button;
+        }
+
+        private void ApplyWASDPreset(PlayerSettings player)
+        {
+            player.Bindings[MoveDirection.UP] = Keyboard.Key.W;
+            player.Bindings[MoveDirection.DOWN] = Keyboard.Key.S;
+            player.Bindings[MoveDirection.LEFT] = Keyboard.Key.A;
+            player.Bindings[MoveDirection.RIGHT] = Keyboard.Key.D;
+        }
+
+        private void ApplyArrowsPreset(PlayerSettings player)
+        {
+            player.Bindings[MoveDirection.UP] = Keyboard.Key.Up;
+            player.Bindings[MoveDirection.DOWN] = Keyboard.Key.Down;
+            player.Bindings[MoveDirection.LEFT] = Keyboard.Key.Left;
+            player.Bindings[MoveDirection.RIGHT] = Keyboard.Key.Right;
         }
 
         public override void ProcessEvent(Event ev)

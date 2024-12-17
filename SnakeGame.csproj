@@ -141,6 +141,7 @@
     <Compile Include="GUI\GUIBuilder.cs" />
     <Compile Include="GUI\GUIFactory.cs" />
     <Compile Include="GUI\IGUIComponent.cs" />
+    <Compile Include="GUI\Segmented.cs" />
     <Compile Include="GUI\Text.cs" />
     <Compile Include="GUI\ValueBinding.cs" />
     <Compile Include="Properties\Settings.Designer.cs">
@@ -166,7 +167,12 @@
     <Compile Include="Screen\PauseScreen.cs" />
     <Compile Include="Core\Snake.cs" />
     <Compile Include="Screen\RoundOverScreen.cs" />
+    <Compile Include="Screen\SetupScreen.cs" />
+    <Compile Include="Settings\AppConfigSettingsManager.cs" />
+    <Compile Include="Settings\PlayerSettings.cs" />
+    <Compile Include="Settings\Settings.cs" />
     <Compile Include="Screen\SettingsScreen.cs" />
+    <Compile Include="Settings\ISettingsManager.cs" />
     <Compile Include="Utils\GameSetupExtensions.cs" />
     <Compile Include="Utils\ImageUtils.cs" />
     <Compile Include="Utils\Resources.cs" />
@@ -217,10 +223,14 @@
       <Generator>SettingsSingleFileGenerator</Generator>
       <LastGenOutput>Settings.Designer.cs</LastGenOutput>
     </None>
-    <None Include="Resources\arial.ttf" />
+    <Resource Include="Resources\arial.ttf">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Resource>
   </ItemGroup>
   <ItemGroup>
-    <None Include="Resources\PressStart2P-Regular.ttf" />
+    <None Include="Resources\PressStart2P-Regular.ttf">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
     <None Include="Resources\simple_background.png" />
     <None Include="Resources\snake-tileset.png" />
   </ItemGroup>

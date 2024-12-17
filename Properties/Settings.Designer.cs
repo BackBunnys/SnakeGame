@@ -157,13 +157,25 @@ namespace SnakeGame.Properties {
         
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("255, 128, 0")]
+        [global::System.Configuration.DefaultSettingValueAttribute("Red")]
         public global::System.Drawing.Color player2_color {
             get {
                 return ((global::System.Drawing.Color)(this["player2_color"]));
             }
             set {
                 this["player2_color"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("NORMAL")]
+        public string difficulty {
+            get {
+                return ((string)(this["difficulty"]));
+            }
+            set {
+                this["difficulty"] = value;
             }
         }
     }
