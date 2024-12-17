@@ -12,6 +12,7 @@ Welcome to the Snake Game! This is a classic multiplayer snake game developed in
 * Versus Bots: Challenge computer-controlled snakes.
 * Static Blocks and Walls: Navigate through obstacles to avoid crashing.
 * Round System: Compete in rounds, with the winner determined by the most victories. Draws are possible!
+* Setup and Settings screen
 
 ## Table of Contents
 
@@ -51,14 +52,14 @@ Or use binaries present in Releases.
 
 ## Controls
 
-### Player 1 (using WASD)
+### Player 1 Defaults (using WASD)
 
 * W: Move Up
 * A: Move Left
 * S: Move Down
 * D: Move Right
 
-### Player 2 (using Arrow Keys)
+### Player 2 Defaults (using Arrow Keys)
 * ↑: Move Up
 * ←: Move Left
 * ↓: Move Down
@@ -69,20 +70,13 @@ Or use binaries present in Releases.
 * Press same direction key to speed up your snake
 * Esc: Pause the game
 
-### Game setup
-To change game setup you need to press this keys during Intro scene (when game title appears):
-* M: To play versus another player (player vs player)
-* B: To play versus computer bot (player vs bot)
-* Num keys: To input round count
-* E: To set difficulty to Easy level
-* N: To set difficulty to Normal level
-* H: To set difficulty to Hard level
-
 ## Architecture
 Code of this project have simple structure:
 * Core - This namespace is responsible for core snake game objects: snakes, fruits, blocks. And their controllers (like KeyboardController and BotController for snake).
 * Engine - This namespace is the base of the game displaying and work (so-called game-loop). This contains StateMachine (for screen/scene managing) and GameEngine structure, that consist of the all required elements for the game (like the window and StateMachine itself)
 * Screen - This namespace consist of all game screens/scenes implementation. Like IntroScreen, GameScreen, PauseScreen, etc.
+* GUI - This namespace is the base of the graphic interface components.
+* Settings - This namespace is repsonsible for settings handling (usign .NET properties and resources mechanism)
 * Utils - Utility classes for handling images, resources, settings and sfml extensions.
 ---
 
