@@ -16,6 +16,7 @@ namespace SnakeGame.GUI
 
         public static GUIFactory Instance => _instance;
         public abstract Text Text(string content);
+        public abstract Text Text(Func<string> content);
         public abstract Button Button(string text, Action onClick);
         public abstract LayoutContainer Container();
         public abstract Input Input(ValueBinding<string> binding);

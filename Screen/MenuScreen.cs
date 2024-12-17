@@ -8,7 +8,7 @@ namespace SnakeGame.Screen
 {
     class MenuScreen : IState
     {
-        LayoutContainer guiContainer;
+        IGUIComponent guiContainer;
 
         public MenuScreen(GameEngine engine) : base(engine)
         {
@@ -18,21 +18,24 @@ namespace SnakeGame.Screen
         {
             var yOffset = 75;
             GUIFactory gui = GUIFactory.Instance;
-            guiContainer = gui.Container();
-            guiContainer.Size = new Vector2f(engine.GetWindow().Size.X, engine.GetWindow().Size.Y - yOffset * 2);
+            var guiBuilder = new GUIBuilder(gui);
+            guiContainer = guiBuilder
+                .Column(new Vector2f(engine.GetWindow().Size.X, engine.GetWindow().Size.Y * 0.6f))
+                    .Component(SetupTitle(gui.Text("Snake Game")))
+                    .Column(size => new Vector2f(size.X, size.Y * 0.6f))
+                        .Component(gui.Button("Start", () => engine.GetMachine().PushState(new SetupScreen(engine))))
+                        .Component(gui.Button("Settings", () => engine.GetMachine().PushState(new SettingsScreen(engine))))
+                        .Component(gui.Button("Exit", () => engine.GetMachine().Clear()))
+                    .Close()
+                .Close()
+                .Build();
             guiContainer.Position = new Vector2f(0, yOffset);
+        }
 
-            var title = gui.Text("Snake Game");
-            title.CharacterSize = 48;
-            guiContainer.Components.Add(title);
-
-            var buttonsContainer = gui.Container();
-            buttonsContainer.Size = new Vector2f(engine.GetWindow().Size.X, engine.GetWindow().Size.Y / 2);
-            buttonsContainer.Components.Add(gui.Button("Start", () => engine.GetMachine().PushState(new SetupScreen(engine))));
-            buttonsContainer.Components.Add(gui.Button("Settings", () => engine.GetMachine().PushState(new SettingsScreen(engine))));
-            buttonsContainer.Components.Add(gui.Button("Exit", () => engine.GetMachine().Clear()));
-
-            guiContainer.Components.Add(buttonsContainer);
+        private GUI.Text SetupTitle(GUI.Text text)
+        {
+            text.CharacterSize = 48;
+            return text;
         }
 
         public override void ProcessEvent(Event ev)

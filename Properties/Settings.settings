@@ -41,5 +41,11 @@
     <Setting Name="difficulty" Type="System.String" Scope="User">
       <Value Profile="(Default)">NORMAL</Value>
     </Setting>
+    <Setting Name="field_width" Type="System.UInt32" Scope="User">
+      <Value Profile="(Default)">34</Value>
+    </Setting>
+    <Setting Name="field_height" Type="System.UInt32" Scope="User">
+      <Value Profile="(Default)">20</Value>
+    </Setting>
   </Settings>
 </SettingsFile>

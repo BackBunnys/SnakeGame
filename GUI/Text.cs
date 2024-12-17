@@ -1,6 +1,7 @@
 ﻿using SFML.Graphics;
 using SFML.System;
 using SFML.Window;
+using System;
 
 namespace SnakeGame.GUI
 {
@@ -15,11 +16,13 @@ namespace SnakeGame.GUI
         public float OutlineThickness { get => text.OutlineThickness; set => text.OutlineThickness = value; }
         public Color OutlineColor { get => text.OutlineColor; set => text.OutlineColor = value; }
 
-        private SFML.Graphics.Text text;
+        private readonly SFML.Graphics.Text text;
+        private readonly Func<string> contentFunc;
 
-        public Text(string content, Font font)
+        public Text(Func<string> contentFunc, Font font)
         {
-            text = new SFML.Graphics.Text(content, font);
+            this.contentFunc = contentFunc;
+            text = new SFML.Graphics.Text(contentFunc.Invoke(), font);
         }
 
         public void ProcessEvent(Event ev)
@@ -34,7 +37,7 @@ namespace SnakeGame.GUI
 
         public void Update(float dt)
         {
-            //Do not updates
+            text.DisplayedString = contentFunc.Invoke();
         }
 
         public FloatRect GetGlobalBounds()

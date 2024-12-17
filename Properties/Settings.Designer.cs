@@ -178,5 +178,29 @@ namespace SnakeGame.Properties {
                 this["difficulty"] = value;
             }
         }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("34")]
+        public uint field_width {
+            get {
+                return ((uint)(this["field_width"]));
+            }
+            set {
+                this["field_width"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("20")]
+        public uint field_height {
+            get {
+                return ((uint)(this["field_height"]));
+            }
+            set {
+                this["field_height"] = value;
+            }
+        }
     }
 }

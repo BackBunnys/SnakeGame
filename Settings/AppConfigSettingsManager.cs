@@ -24,6 +24,7 @@ namespace SnakeGame.Settings
             Settings settings = new Settings();
 
             settings.Difficulty = (GameDifficulty)Enum.Parse(typeof(GameDifficulty), properties.difficulty);
+            settings.FieldSize = new SFML.System.Vector2u(properties.field_width, properties.field_height);
 
             settings.Player1.Name = properties.player1_name;
             settings.Player1.Color = new Color(properties.player1_color.R, properties.player1_color.G, properties.player1_color.B);
@@ -45,6 +46,9 @@ namespace SnakeGame.Settings
         private void Merge(Properties.Settings properties, Settings settings)
         {
             properties.difficulty = settings.Difficulty.ToString();
+            properties.field_width = settings.FieldSize.X;
+            properties.field_height = settings.FieldSize.Y;
+
             properties.player1_name = settings.Player1.Name;
             properties.player1_color = System.Drawing.Color.FromArgb(settings.Player1.Color.R, settings.Player1.Color.G, settings.Player1.Color.B);
             properties.player1_up = settings.Player1.Bindings[MoveDirection.UP].ToString();

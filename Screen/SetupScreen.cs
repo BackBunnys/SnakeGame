@@ -20,6 +20,8 @@ namespace SnakeGame.Screen
         private HumanPlayerSetup player1 = HumanPlayerSetup.PLAYER_ONE;
         private HumanPlayerSetup player2 = HumanPlayerSetup.PLAYER_TWO;
 
+        uint roundCount = 3;
+
         public SetupScreen(GameEngine engine) : base(engine)
         {
             var manager = new AppConfigSettingsManager();
@@ -49,15 +51,20 @@ namespace SnakeGame.Screen
                            }, 0))
                        .Close()
                    .Close()
-                   .Column(new Vector2f(engine.GetWindow().Size.X - 50, 60))
+                   .Column(new Vector2f(engine.GetWindow().Size.X - 50, 100))
                        .Component(gui.Text("Rounds"))
                        .Row(size => new Vector2f(size.X, 25))
                            .Component(gui.Segmented(new Vector2f(engine.GetWindow().Size.X - 50, 25), new List<Button>() 
                            {
                                gui.Button("Fast game", () => setup.RoundCount = 1),
-                               gui.Button("Count", () => setup.RoundCount = 3),
+                               SetupCountOption(gui.Button("Count", () => setup.RoundCount = 3)),
                                gui.Button("Infinite", () => setup.RoundCount = null) 
                            }, 0))
+                       .Close()
+                       .Row(size => new Vector2f(110, 20), LayoutContainer.AlignType.START)
+                           .Component(gui.Button("-", () => ChangeRoundCount(-1)))
+                           .Component(gui.Text(() => roundCount.ToString()))
+                           .Component(gui.Button("+", () => ChangeRoundCount(1)))
                        .Close()
                    .Close()
                    .Row(new Vector2f(engine.GetWindow().Size.X - 50, 75), LayoutContainer.AlignType.END)
@@ -70,9 +77,21 @@ namespace SnakeGame.Screen
             guiContainer.Position = new Vector2f(0, yOffset);
         }
 
+        private void ChangeRoundCount(int delta)
+        {
+            roundCount = (uint) Math.Max(roundCount + delta, 2);
+        }
+
+        private Button SetupCountOption(Button button)
+        {
+            button.HoverPadding = new Vector2f(50, 100);
+            return button;
+        }
+
         private void InitSetup()
         {
             setup.Difficulty = settings.Difficulty;
+            setup.FieldSize = settings.FieldSize;
             InitPlayerSetup(player1, settings.Player1);
             InitPlayerSetup(player2, settings.Player2);
         }
@@ -87,6 +106,10 @@ namespace SnakeGame.Screen
 
         private void StartGame()
         {
+            if (setup.RoundCount > 1)
+            {
+                setup.RoundCount = roundCount;
+            }
             engine.GetMachine().PushState(new GameScreen(engine, setup));
         }
 

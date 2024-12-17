@@ -22,16 +22,21 @@ namespace SnakeGame.GUI
             return button;
         }
 
-        public override Text Text(string content)
+        public override Text Text(Func<string> contentFunc)
         {
-            return new Text(content, Font)
+            return new Text(contentFunc, Font)
             {
                 FillColor = Color.White,
-                CharacterSize = 20,
+                CharacterSize = 22,
                 Style = SFML.Graphics.Text.Styles.Bold,
-                OutlineColor = Color.Black,
+                OutlineColor = new Color(100, 100, 100),
                 OutlineThickness = 1
             };
+        }
+
+        public override Text Text(string content)
+        {
+            return Text(() => content);
         }
 
         public override LayoutContainer Container()

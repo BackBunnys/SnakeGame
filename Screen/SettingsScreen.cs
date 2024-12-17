@@ -25,10 +25,10 @@ namespace SnakeGame.Screen
 
         public override void Init()
         {
-            const float yOffset = 50f;
+            const float yOffset = 25f;
             List<Color> availableColors = new List<Color>()
             {
-                Color.White, Color.Blue, Color.Cyan, Color.Green, Color.Magenta, Color.Red
+                Color.Blue, Color.Cyan, Color.Green, Color.Magenta, Color.Red
             };
 
             GUIFactory gui = GUIFactory.Instance;
@@ -36,7 +36,7 @@ namespace SnakeGame.Screen
             guiContainer = guiBuilder
                 .Column(new Vector2f(engine.GetWindow().Size.X, engine.GetWindow().Size.Y - yOffset * 2))
                     .Component(gui.Text("Settings"))
-                    .Row(new Vector2f(engine.GetWindow().Size.X, engine.GetWindow().Size.Y - yOffset * 2 - 150))
+                    .Row(new Vector2f(engine.GetWindow().Size.X, engine.GetWindow().Size.Y - yOffset * 2 - 200))
                         .Column(size => new Vector2f(size.X / 2, size.Y / 2 + 125))
                             .Component(gui.Text("Player 1"))
                             .Row(size => new Vector2f(size.X - 50, 40), LayoutContainer.AlignType.START)
@@ -91,6 +91,22 @@ namespace SnakeGame.Screen
                         .Close()
                     .Close()
                     .Column(new Vector2f(engine.GetWindow().Size.X - 50, 60))
+                        .Component(gui.Text("Field"))
+                        .Row(size => new Vector2f(250, 25), LayoutContainer.AlignType.END)
+                            .Row(size => new Vector2f(100, 25), LayoutContainer.AlignType.START)
+                                .Component(gui.Button("-", () => ChangeFieldSize(new Vector2i(-1, 0))))
+                                .Component(gui.Text(() => settings.FieldSize.X.ToString()))
+                                .Component(gui.Button("+", () => ChangeFieldSize(new Vector2i(1, 0))))
+                            .Close()
+                            .Row(size => new Vector2f(100, 25), LayoutContainer.AlignType.START)
+                                .Component(gui.Button("-", () => ChangeFieldSize(new Vector2i(0, -1))))
+                                .Component(gui.Text(() => settings.FieldSize.Y.ToString()))
+                                .Component(gui.Button("+", () => ChangeFieldSize(new Vector2i(0, 1))))
+                            .Close()
+                        .Close()
+                    .Close()
+                    .Row(new Vector2f(engine.GetWindow().Size.X - 50, 60)).Close()
+                    .Column(new Vector2f(engine.GetWindow().Size.X - 50, 60))
                         .Component(gui.Text("Difficulty"))
                         .Row(size => new Vector2f(size.X, 25))
                             .Component(gui.Segmented(new Vector2f(engine.GetWindow().Size.X - 50, 25), new List<Button>()
@@ -111,9 +127,14 @@ namespace SnakeGame.Screen
             guiContainer.Position = new Vector2f(0, yOffset);
         }
 
+        private void ChangeFieldSize(Vector2i delta)
+        {
+            settings.FieldSize = new Vector2u((uint)Math.Max(settings.FieldSize.X + delta.X, 10), (uint)Math.Max(settings.FieldSize.Y + delta.Y, 10));
+        }
+
         private ColorPalette SetupColorPalette(ColorPalette colorPalette)
         {
-            colorPalette.Size = new Vector2f(200, 25);
+            colorPalette.Size = new Vector2f(170, 25);
             colorPalette.ColorTileMargin = 10;
             colorPalette.ColorTileSize = new Vector2f(25, 25);
             return colorPalette;

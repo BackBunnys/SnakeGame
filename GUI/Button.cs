@@ -18,7 +18,7 @@ namespace SnakeGame.GUI
         public event Action OnClick;
 
         public Text Text { get; set; }
-
+        private bool Hovered { get; set; } = false;
 
         public Button(Text text)
         {
@@ -30,18 +30,11 @@ namespace SnakeGame.GUI
         {
             if (ev.Type == EventType.MouseMoved)
             {
-                if (IsInBounds(new Vector2f(ev.MouseMove.X, ev.MouseMove.Y)))
-                {
-                   Text.FillColor = HoverColor;
-                } 
-                else
-                {
-                    Text.FillColor = Color;
-                }
+                Hovered = IsInBounds(new Vector2f(ev.MouseMove.X, ev.MouseMove.Y));
             }
             if (ev.Type == EventType.MouseButtonReleased)
             {
-                if (IsInBounds(new Vector2f(ev.MouseButton.X, ev.MouseButton.Y))) 
+                if (Hovered) 
                 {
                     OnClick?.Invoke();
                 }
@@ -60,7 +53,7 @@ namespace SnakeGame.GUI
 
         public void Update(float dt)
         {
-            //Do not updates
+            Text.FillColor = Hovered ? HoverColor : Color;
         }
     }
 }
